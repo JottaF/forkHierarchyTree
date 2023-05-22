@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="fork.js"></script>
+    <title>Fork Hierarchy Tree</title>
+  </head>
+  <body>
+    <div>
+      <h1>Analisador de código C</h1>
+      <hr />
+      <p>
+        Na caixa de texto abaixo (entrada) digite um código C que utilize a
+        função fork().
+      </p>
+      <form onsubmit="onSubmit(); return false;">
+        <div>
+          <label for="entrada">Entrada</label>
+          <textarea id="entrada"></textarea>
+        </div>
+        <button type="submit">Analisar</button>
+      </form>
+    </div>
+    <script>
+      function onSubmit() {
+        event.preventDefault();
+        const entrada = document.getElementById("entrada");
+        const cod = ForkJS.parse(entrada.value);
+      }
+    </script>
+  </body>
+</html>
