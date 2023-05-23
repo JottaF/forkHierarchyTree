@@ -2,15 +2,34 @@ import antlr4 from "antlr4";
 import CListener from "./CListener";
 
 export default class CListenerSimples extends CListener {
+  constructor() {
+    super();
+    this.variables = [];
+  }
+  enterCompilationUnit(ctx) {
+    console.debug(
+      "-------------------ENTER CompilationUnit-------------------"
+    );
+    console.debug("ctx:", ctx);
+    console.debug("ctx.getText():", ctx.getText());
+    ctx.variables = {};
+  }
+  exitCompilationUnit(ctx) {
+    console.warn("-------------------EXIT CompilationUnit-------------------");
+    console.warn("ctx:", ctx);
+    console.warn("ctx.getText():", ctx.getText());
+    this.variables.push(ctx.variables);
+    console.warn("this.variables:", this.variables);
+  }
   enterTypeSpecifier(ctx) {
     console.debug("-------------------ENTER TypeSpecifier-------------------");
     console.debug("ctx:", ctx);
     console.debug("ctx.getText():", ctx.getText());
   }
   exitTypeSpecifier(ctx) {
-    console.debug("-------------------EXIT TypeSpecifier-------------------");
-    console.debug("ctx:", ctx);
-    console.debug("ctx.getText():", ctx.getText());
+    console.warn("-------------------EXIT TypeSpecifier-------------------");
+    console.warn("ctx:", ctx);
+    console.warn("ctx.getText():", ctx.getText());
   }
   enterDirectDeclarator(ctx) {
     console.debug(
@@ -20,11 +39,11 @@ export default class CListenerSimples extends CListener {
     console.debug("ctx.getText():", ctx.getText());
   }
   exitDirectDeclarator(ctx) {
-    console.debug(
-      "-------------------EXIT DirectDeclarator-------------------"
-    );
-    console.debug("ctx:", ctx);
-    console.debug("ctx.getText():", ctx.getText());
+    console.warn("-------------------EXIT DirectDeclarator-------------------");
+    console.warn("ctx:", ctx);
+    console.warn("ctx.getText():", ctx.getText());
+    const variable = ctx.getText();
+    ctx.variables[variable] = null;
   }
   enterInitDeclaratorList(ctx) {
     console.debug(
@@ -34,25 +53,24 @@ export default class CListenerSimples extends CListener {
     console.debug("ctx.getText():", ctx.getText());
   }
   exitInitDeclaratorList(ctx) {
-    console.debug(
+    console.warn(
       "-------------------EXIT InitDeclaratorList-------------------"
     );
-    console.debug("ctx:", ctx);
-    console.debug("ctx.getText():", ctx.getText());
+    console.warn("ctx:", ctx);
+    console.warn("ctx.getText():", ctx.getText());
+    console.warn("ctx.children:", ctx.children);
   }
   enterInitializer(ctx) {
-    console.debug(
-      "-------------------ENTER Initializer-------------------"
-    );
+    console.debug("-------------------ENTER Initializer-------------------");
     console.debug("ctx:", ctx);
     console.debug("ctx.getText():", ctx.getText());
   }
   exitInitializer(ctx) {
-    console.debug(
-      "-------------------EXIT Initializer-------------------"
-    );
-    console.debug("ctx:", ctx);
-    console.debug("ctx.getText():", ctx.getText());
+    console.warn("-------------------EXIT Initializer-------------------");
+    console.warn("ctx:", ctx);
+    console.warn("ctx.getText():", ctx.getText());
+
+    ctx.variables;
   }
   enterPrimaryExpression(ctx) {
     console.debug(
@@ -62,10 +80,10 @@ export default class CListenerSimples extends CListener {
     console.debug("ctx.getText():", ctx.getText());
   }
   exitPrimaryExpression(ctx) {
-    console.debug(
+    console.warn(
       "-------------------EXIT PrimaryExpression-------------------"
     );
-    console.debug("ctx:", ctx);
-    console.debug("ctx.getText():", ctx.getText());
+    console.warn("ctx:", ctx);
+    console.warn("ctx.getText():", ctx.getText());
   }
 }
