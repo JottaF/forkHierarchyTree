@@ -2,12 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="fork.js"></script>
-    <title>Fork Hierarchy Tree</title>
+    <title>Simulação de Árvore de Processos</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+<<<<<<< HEAD
     <div>
       <h1>Analisador de código C</h1>
       <hr />
@@ -30,5 +30,23 @@
         const cod = ForkJS.parse(entrada.value);
       }
     </script>
+=======
+    <header id="header">
+      <h1>Simulação de Árvore de Processos</h1>
+      <div id="header-buttons">
+        <button id="new-btn" onclick="apagarInput()">Apagar</button>
+        <button id="run-btn" onclick="gerarArvore()">Gerar árvore</button>
+      </div>
+    </header>
+    <main class="container">
+      <div id="input-container">
+        <div id="c-code-editor" style="height: 100%;"></div>
+      </div>
+      <div id="output-container"></div>
+    </main>
+    <script src="fork.js"></script>
+    <script src="https://unpkg.com/monaco-editor/min/vs/loader.js"></script>
+    <script src="script.js"></script>
+>>>>>>> 2ad53413a2e151ea74b28d3b78552fda637457d2
   </body>
 </html>

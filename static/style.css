@@ -1,0 +1,38 @@
+body, html {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    padding: 10px 0;
+    font-size: 1.2rem;
+}
+
+#header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 95%;
+    height: 60%;
+    gap: 2%; 
+}
+
+#input-container, #output-container {
+    flex: 1;
+    height: 100%;
+    border: 1px solid #ccc;    
+}
