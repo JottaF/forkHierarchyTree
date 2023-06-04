@@ -26,6 +26,7 @@ function gerarArvore() {
         return;
     }
     const cod = ForkJS.parse(entrada);
+    new Treant( chart_config );
 }
 
 function apagarInput() {
