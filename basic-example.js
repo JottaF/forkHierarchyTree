@@ -1,4 +1,24 @@
 
+var children = [
+    {
+        text:{
+            name: "PID: 2",
+            title: "PPID: 1",
+        }
+    },
+    {
+        text:{
+            name: "PID: 3",
+            title: "PPID: 1",
+        }
+    },
+    {
+        text:{
+            name: "PID: 4",
+            title: "PPID: 1",
+        }
+    }
+];
 
 var chart_config = {
     chart: {
@@ -18,25 +38,6 @@ var chart_config = {
         text: {
             name: "PID: 1",
         },
-        children: [
-            {
-                text:{
-                    name: "PID: 2",
-                    title: "PPID: 1",
-                }
-            },
-            {
-                text:{
-                    name: "PID: 3",
-                    title: "PPID: 1",
-                }
-            },
-            {
-                text:{
-                    name: "PID: 4",
-                    title: "PPID: 1",
-                }
-            }
-        ]
+        children: children
     }
 };
