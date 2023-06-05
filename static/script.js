@@ -12,6 +12,7 @@ require(["vs/editor/editor.main"], function () {
         "",
         "int main() {",
         '\tprintf("Olá, mundo!");',
+        '\tfork();',
         "\treturn 0;",
         "}",
       ].join("\n"),
@@ -29,6 +30,7 @@ function gerarArvore() {
     return;
   }
   const cod = ForkJS.parse(entrada);
+  console.log(cod.bundleTree());
   new Treant(cod.bundleTree());
 }
 
