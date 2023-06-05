@@ -52,10 +52,10 @@ export class ForkTree {
   }
 
   bundleTree() {
-    const bundle = []
+    const bundle = [];
 
     const config = {
-      container: "#basic-example",
+      container: "#output-container",
 
       connectors: {
         type: "step",
@@ -67,12 +67,12 @@ export class ForkTree {
 
     const bundleNode = {
       text: {
-        name: `PPID: ${this.root.ppid}`,
-        title: `PID: ${this.root.pid}`,
+        title: `PPID: ${this.root.ppid}`,
+        name: `PID: ${this.root.pid}`,
       },
     };
 
-    bundle.push(config)
+    bundle.push(config);
     bundle.push(bundleNode);
 
     for (let child of this.root.children) {
@@ -83,12 +83,12 @@ export class ForkTree {
   }
 
   _bundleTree(node, parent) {
-    const bundle = []
+    const bundle = [];
 
     const bundleNode = {
       text: {
-        name: `PPID: ${node.ppid}`,
-        title: `PID: ${node.pid}`,
+        title: `PPID: ${node.ppid}`,
+        name: `PID: ${node.pid}`,
       },
       parent: parent,
       stackChildren: true,
@@ -100,6 +100,6 @@ export class ForkTree {
       bundle.push(...this._bundleTree(child, bundleNode));
     }
 
-    return bundle
+    return bundle;
   }
 }
