@@ -8,18 +8,14 @@ body, html {
     align-items: center;
 }
 
-#header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 90%;
-    padding: 10px 0;
-    font-size: 1.2rem;
+header {
+    width: 100%;
 }
 
-#header-buttons {
-    display: flex;
-    gap: 10px;
+#nav {
+    padding-inline: 7%;
+    padding-block: 1%;
+    margin-bottom: 5%;
 }
 
 .container {
@@ -33,6 +29,11 @@ body, html {
 
 #input-container, #output-container {
     flex: 1;
-    height: 100%;
+    height: 100%;    
     border: 1px solid #ccc;    
+    /* arredondando bordas  */
+    border-radius: 10px;
+    /* adicionando sombra */
+    box-shadow: 0 0 5px #ccc;
+
 }
