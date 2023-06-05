@@ -13,5 +13,6 @@ export let parse = (input) => {
 
   const listener = new CListenerSimples();
   antlr4.tree.ParseTreeWalker.DEFAULT.walk(listener, tree);
-  return null;
+
+  return listener.tree;
 };

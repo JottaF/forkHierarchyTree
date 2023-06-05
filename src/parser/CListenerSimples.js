@@ -1,4 +1,3 @@
-import antlr4 from "antlr4";
 import CListener from "./CListener";
 import { ForkTree } from "../ForkTree";
 
