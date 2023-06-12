@@ -21,7 +21,7 @@ module.exports = {
   },
   output: {
     filename: "fork.js",
-    path: path.resolve(__dirname, "static"),
+    path: path.resolve(__dirname, "static/scripts"),
     library: "ForkJS",
     libraryTarget: "var",
   },
