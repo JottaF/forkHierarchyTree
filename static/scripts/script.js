@@ -11,9 +11,9 @@ require(["vs/editor/editor.main"], function () {
         "#include <stdio.h>",
         "",
         "int main() {",
-        '\tprintf("Olá, mundo!");',
-        '\tfork();',
-        "\treturn 0;",
+        '\tif (fork() == 0) {',
+        '\t\texit();',
+        "\t}",
         "}",
       ].join("\n"),
       language: "c",
@@ -30,7 +30,6 @@ function gerarArvore() {
     return;
   }
   const cod = ForkJS.parse(entrada);
-  console.log(cod.bundleTree());
   new Treant(cod.bundleTree());
 }
 
