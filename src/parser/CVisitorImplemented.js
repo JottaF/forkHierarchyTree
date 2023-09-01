@@ -1,7 +1,7 @@
-import CListener from "./CListener";
+import CVisitor from "./CVisitor";
 import { ForkTree } from "../ForkTree";
 
-export default class CListenerSimples extends CListener {
+export default class CVisitorImplemented extends CVisitor {
   constructor() {
     super();
     this.tree = new ForkTree();
@@ -40,17 +40,18 @@ export default class CListenerSimples extends CListener {
   exitCompilationUnit(ctx) {
     console.warn("this.variables:", this.variables);
     console.warn("this.selectionConditions:", this.selectionConditions);
+    return this.visitChildren(ctx);
   }
 
-  enterBlockItem(ctx) {
+  visitBlockItem(ctx) {
     if (ctx.getText().includes("fork()")) {
       this.tree.addChild();
     }
   }
 
-  // Enter a parse tree produced by CParser#declaration.
-  enterDeclaration(ctx) {
-    console.debug("-------------------ENTER Declaration-------------------");
+  // visit a parse tree produced by CParser#declaration.
+  visitDeclaration(ctx) {
+    console.debug("-------------------visit Declaration-------------------");
     console.debug("ctx:", ctx);
     console.debug("ctx.getText():", ctx.getText());
     console.debug("ctx.children.length:", ctx.children.length);
@@ -132,17 +133,19 @@ export default class CListenerSimples extends CListener {
         `The variable '${variable.name}' has already been declared.`
       );
     }
+    return this.visitChildren(ctx);
   }
 
-  enterSelectionStatement(ctx) {
+  visitSelectionStatement(ctx) {
     if (ctx.children[0].getText() == "if") {
       ctx.condition = null;
       const leafs = [];
       this.getLeafs(ctx.children[2], leafs);
     }
+    return this.visitChildren(ctx);
   }
 
-  enterEqualityExpression(ctx) {
+  visitEqualityExpression(ctx) {
     if (ctx.children.length > 2) {
       const leafs = [];
       this.getLeafs(ctx, leafs, ["(", ")"]);
@@ -153,17 +156,18 @@ export default class CListenerSimples extends CListener {
         this.findSelectionParent(ctx.parentCtx, false);
       }
     }
+    return this.visitChildren(ctx);
   }
 
-  enterStatement(ctx) {
+  visitStatement(ctx) {
     if (ctx.parentCtx.constructor.name == "SelectionStatementContext") {
-      super.exitEveryRule(ctx);
-
       return ctx.parentCtx.condition;
     }
+    return this.visitChildren(ctx);
   }
 
-  enterPostfixExpression(ctx) {
+  visitPostfixExpression(ctx) {
     console.log(ctx.getText());
+    return this.visitChildren(ctx);
   }
 }
