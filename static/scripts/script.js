@@ -30,7 +30,6 @@ function gerarArvore() {
     return;
   }
   const cod = ForkJS.parse(entrada);
-  console.log("cod:", cod);
   new Treant(cod.bundleTree());
 }
 
