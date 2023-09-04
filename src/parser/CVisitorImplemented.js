@@ -8,6 +8,10 @@ export default class CVisitorImplemented extends CVisitor {
     this.variables = new Map();
   }
 
+  async visitChildren(ctx) {
+    return await super.visitChildren(ctx);
+  }
+
   // Função que retorna as folhas de um determinado nó
   getLeafs(node, leafs, exclusions = []) {
     if (!node.children) {
@@ -37,29 +41,23 @@ export default class CVisitorImplemented extends CVisitor {
     }
   }
 
-  exitCompilationUnit(ctx) {
+  async visitCompilationUnit(ctx) {
+    let a = this.visitChildren(ctx);
     console.warn("this.variables:", this.variables);
     console.warn("this.selectionConditions:", this.selectionConditions);
-    return this.visitChildren(ctx);
+    console.warn("this:", this);
+    console.warn("a:", a);
   }
 
   visitBlockItem(ctx) {
     if (ctx.getText().includes("fork()")) {
-      this.tree.addChild();
+      this.tree.addChild(this.tree.root.pid);
     }
+    return this.visitChildren(ctx);
   }
 
   // visit a parse tree produced by CParser#declaration.
   visitDeclaration(ctx) {
-    console.debug("-------------------visit Declaration-------------------");
-    console.debug("ctx:", ctx);
-    console.debug("ctx.getText():", ctx.getText());
-    console.debug("ctx.children.length:", ctx.children.length);
-    console.debug("ctx.children:", ctx.children);
-    console.debug("first child:", ctx.children[0].getText());
-    console.debug("second child:", ctx.children[1].getText());
-    // console.debug("terceiro child:", ctx.children[2].getText());
-
     let variable = {};
     const leafs = [];
 
@@ -76,7 +74,6 @@ export default class CVisitorImplemented extends CVisitor {
       variable.type = ctx.children[0].getText();
       variable.name = leafs[0];
       variable.value = leafs[2];
-      console.log(variable);
     }
     // Verifica se é uma declaração sem atribuir valor com muitas variáveis. `int a, b, c = 0;` Por exemplo
     else if (
@@ -101,7 +98,7 @@ export default class CVisitorImplemented extends CVisitor {
           );
         }
       }
-      return;
+      return this.visitChildren(ctx);
     }
     // Verifica se é uma declaração sem atribuir valor com muitas variáveis. `int a, b, c;` Por exemplo
     else if (ctx.children[1].children.length > 1) {
@@ -123,7 +120,7 @@ export default class CVisitorImplemented extends CVisitor {
           );
         }
       }
-      return;
+      return this.visitChildren(ctx);
     }
 
     if (!this.variables.has(variable.name)) {
@@ -136,32 +133,34 @@ export default class CVisitorImplemented extends CVisitor {
     return this.visitChildren(ctx);
   }
 
-  visitSelectionStatement(ctx) {
+  async visitSelectionStatement(ctx) {
     if (ctx.children[0].getText() == "if") {
       ctx.condition = null;
       const leafs = [];
       this.getLeafs(ctx.children[2], leafs);
     }
-    return this.visitChildren(ctx);
+    await this.visitChildren(ctx);
   }
 
   visitEqualityExpression(ctx) {
     if (ctx.children.length > 2) {
       const leafs = [];
       this.getLeafs(ctx, leafs, ["(", ")"]);
-      console.log("eqex:", leafs);
       if (leafs[0] === leafs[2]) {
         this.findSelectionParent(ctx.parentCtx, true);
       } else {
         this.findSelectionParent(ctx.parentCtx, false);
       }
     }
-    return this.visitChildren(ctx);
+    return "this.visitChildren(ctx)";
   }
 
   visitStatement(ctx) {
-    if (ctx.parentCtx.constructor.name == "SelectionStatementContext") {
-      return ctx.parentCtx.condition;
+    if (
+      ctx.parentCtx.constructor.name == "SelectionStatementContext" &&
+      ctx.parentCtx.condition === false
+    ) {
+      return null;
     }
     return this.visitChildren(ctx);
   }
