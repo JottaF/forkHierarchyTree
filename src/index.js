@@ -1,8 +1,8 @@
 import antlr4 from "antlr4";
 import CLexer from "./parser/CLexer";
 import CParser from "./parser/CParser";
-import CListenerSimples from "./parser/CListenerSimples";
-// import CListenerCompleto from "./CListenerCompleto";
+import CVisitorImplemented from "./parser/CVisitorImplemented";
+
 export let parse = (input) => {
   const stream = new antlr4.InputStream(input);
   const lexer = new CLexer(stream);
@@ -11,8 +11,8 @@ export let parse = (input) => {
   parser.buildParseTrees = true;
   const tree = parser.compilationUnit();
 
-  const listener = new CListenerSimples();
-  antlr4.tree.ParseTreeWalker.DEFAULT.walk(listener, tree);
+  const visitor = new CVisitorImplemented();
+  visitor.visit(tree);
 
-  return listener.tree;
+  return visitor.tree;
 };

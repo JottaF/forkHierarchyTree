@@ -17,16 +17,22 @@ class Node {
     this.children = [];
   }
 
-  addChild(pidController) {
-    if (this.children.length == 0) {
-      const node = new Node(pidController, this.pid);
-      this.children.push(node);
-    } else {
-      const node = new Node(pidController, this.pid);
-      for (let child of this.children) {
-        child.addChild(pidController, this.pid);
+  addChild(pidController, ppid, node) {
+    if (this.pid === ppid) {
+      const newNode = new Node(pidController, this.pid);
+      if (node) {
+        newNode.children = [...node.children];
+        newNode.pid = node.pid;
       }
-      this.children.push(node);
+      this.children.push(newNode);
+      console.log(newNode.pid);
+      return newNode.pid;
+    } else {
+      if (this.children.length > 0) {
+        for (let i of this.children) {
+          i.addChild(pidController, ppid, node);
+        }
+      }
     }
   }
 }
@@ -47,8 +53,12 @@ export class ForkTree {
     }
   }
 
-  addChild() {
-    this.root.addChild(this.pidController);
+  addChild(ppid, node) {
+    return this.root.addChild(
+      this.pidController,
+      ppid ? ppid : this.root.pid,
+      node
+    );
   }
 
   bundleTree() {
