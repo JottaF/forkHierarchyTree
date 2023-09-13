@@ -25,7 +25,6 @@ class Node {
         newNode.pid = node.pid;
       }
       this.children.push(newNode);
-      console.log(newNode.pid);
       return newNode.pid;
     } else {
       if (this.children.length > 0) {

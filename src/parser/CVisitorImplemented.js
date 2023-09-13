@@ -6,12 +6,11 @@ export default class CVisitorImplemented extends CVisitor {
     super();
     this.tree = new ForkTree();
     this.variables = new Map();
-    this.children = [];
+    this.processList = [];
     this.isActivated = true;
   }
 
   visitChildren(ctx) {
-    // console.log(ctx.getText(), "\n", ctx.constructor.name, "\n\n");
     if (!this.isActivated) return null;
     return super.visitChildren(ctx);
   }
@@ -22,7 +21,7 @@ export default class CVisitorImplemented extends CVisitor {
     console.warn("this.variables:", this.variables);
     console.warn("this.selectionConditions:", this.selectionConditions);
     console.warn("this:", this);
-    console.warn("this.children:", this.children);
+    console.warn("this.processList:", this.processList);
     this.isActivated = false;
   }
 
@@ -37,7 +36,6 @@ export default class CVisitorImplemented extends CVisitor {
 
     for (let i = 0; i < parent.length; i++) {
       if (parent[i] == this.currentBlockItem) {
-        console.log("É esse aqui", i);
       }
     }
 
@@ -481,6 +479,12 @@ export default class CVisitorImplemented extends CVisitor {
             );
         }
         return variable;
+      } else if (element == null) {
+        console.error(
+          `A variável "${ctx.children[0].getText()}" não foi iniciada. Não é possível realizar esse tipo de operação antes da inicialização da variável. Erro Linha ${
+            ctx.start.line
+          }.`
+        );
       } else {
         console.error(
           `O termo "${ctx.children[1].getText()}" não foi definida ou não é compatível com a operação. Erro Linha ${
@@ -494,7 +498,7 @@ export default class CVisitorImplemented extends CVisitor {
 
   visitPostfixExpression(ctx) {
     const result = this.visitChildren(ctx);
-    const element = result[0];
+    let element = result[0];
 
     if (this.isActivated) {
       if (ctx.getText() === "exit(0)") {
@@ -502,14 +506,14 @@ export default class CVisitorImplemented extends CVisitor {
         return null;
       } else if (ctx.getText() === "fork()") {
         let node = this.tree.addChild();
-        this.children.push({
+        this.processList.push({
           pid: node,
           forkReturn: 0,
           blockItem: this.currentBlockItem,
         });
         return node;
       } else if (ctx.children.length === 2) {
-        if (typeof element === Number) {
+        if (typeof element === typeof Number()) {
           switch (ctx.children[1].getText()) {
             case "++":
               element++;
@@ -526,6 +530,12 @@ export default class CVisitorImplemented extends CVisitor {
               );
           }
           return element;
+        } else if (element == null) {
+          console.error(
+            `A variável "${ctx.children[0].getText()}" não foi iniciada. Não é possível realizar esse tipo de operação antes da inicialização da variável. Erro Linha ${
+              ctx.start.line
+            }.`
+          );
         } else {
           console.error(
             `O termo "${ctx.children[0].getText()}" não foi definida ou não é compatível com a operação. Erro Linha ${
