@@ -26,6 +26,7 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitCompoundStatement(ctx) {
+    ctx.isChild = true;
     this.visitChildren(ctx);
 
     const children = Array.from(ctx.children[1].children);
