@@ -25,6 +25,19 @@ export default class CVisitorImplemented extends CVisitor {
     this.isActivated = false;
   }
 
+  visitCompoundStatement(ctx) {
+    this.visitChildren(ctx);
+
+    const children = Array.from(ctx.children[1].children);
+    for (let process of this.processList) {
+      for (let i = 0; i < children.length; i++) {
+        if (children[i] == process.blockItem) {
+          console.log("pid", process.pid, "slice", children.slice(i));
+        }
+      }
+    }
+  }
+
   visitBlockItemList(ctx) {
     this.blockItemList = ctx;
     return this.visitChildren(ctx);
@@ -460,6 +473,7 @@ export default class CVisitorImplemented extends CVisitor {
   visitUnaryExpression(ctx) {
     const result = this.visitChildren(ctx);
     const element = result[0];
+    const variable = result[1];
 
     if (ctx.children.length === 2) {
       if (typeof element === Number) {
@@ -478,7 +492,24 @@ export default class CVisitorImplemented extends CVisitor {
               ctx.children[0].getText()
             );
         }
-        return variable;
+        return element;
+      } else if (typeof variable === typeof Object()) {
+        switch (ctx.children[0].getText()) {
+          case "++":
+            variable.value++;
+            break;
+
+          case "--":
+            variable.value--;
+            break;
+
+          default:
+            console.error(
+              "Não foi possível processar a informação:",
+              ctx.children[0].getText()
+            );
+        }
+        return variable.value;
       } else if (element == null) {
         console.error(
           `A variável "${ctx.children[0].getText()}" não foi iniciada. Não é possível realizar esse tipo de operação antes da inicialização da variável. Erro Linha ${
@@ -530,6 +561,23 @@ export default class CVisitorImplemented extends CVisitor {
               );
           }
           return element;
+        } else if (typeof element === typeof Object()) {
+          switch (ctx.children[1].getText()) {
+            case "++":
+              element.value++;
+              break;
+
+            case "--":
+              element.value--;
+              break;
+
+            default:
+              console.error(
+                "Não foi possível processar a informação:",
+                ctx.children[1].getText()
+              );
+          }
+          return element.value;
         } else if (element == null) {
           console.error(
             `A variável "${ctx.children[0].getText()}" não foi iniciada. Não é possível realizar esse tipo de operação antes da inicialização da variável. Erro Linha ${
@@ -565,7 +613,7 @@ export default class CVisitorImplemented extends CVisitor {
       let variable = this.variables.get(ctx.getText());
       let number = Number(ctx.getText());
       if (variable) {
-        return variable.value;
+        return variable;
       } else if (number.toString() != "NaN") {
         return number;
       }
