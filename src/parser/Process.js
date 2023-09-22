@@ -1,11 +1,17 @@
 import { ForkTree } from "../ForkTree";
 
 export class Process {
-  constructor(blockItem, pid) {
+  /**
+   *
+   * @param {blockItem} blockItem
+   * @param {ForkTree} node
+   */
+  constructor(blockItem, node) {
     this.blockItem = blockItem;
-    this.pid = pid;
     this.variables = new Map();
     this.isActivated = true;
-    this.tree = new ForkTree();
+    this.tree = node;
+    this.count = 0;
+    this.pid = 0;
   }
 }

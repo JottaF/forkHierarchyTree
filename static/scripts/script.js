@@ -11,15 +11,13 @@ require(["vs/editor/editor.main"], function () {
         "#include <stdio.h>",
         "",
         "int main() {",
-        "\tfork();",
-        "\tint a;",
-        "\ta = 4;",
-        "\tif ((a = fork()) - 1000 <= 0) {",
-        "\t\ta++;",
-        "\t\t++a;",
+        "\tint a, b, c;",
+        "\ta = fork();",
+        "\tb = fork();",
+        "\tif(b == 0) {",
         "\t\texit(0);",
-        "\t};",
-        "\tfork();",
+        "\t}",
+        "\tc = fork();",
         "}",
       ].join("\n"),
       language: "c",
@@ -31,6 +29,7 @@ require(["vs/editor/editor.main"], function () {
 
 function gerarArvore() {
   const entrada = window.editor.getValue();
+
   if (entrada == "") {
     alert("Insira um código C para gerar a árvore sintática!");
     return;

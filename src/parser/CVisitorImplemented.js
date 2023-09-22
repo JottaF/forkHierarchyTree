@@ -1,39 +1,72 @@
-import CVisitor from "./CVisitor";
 import { ForkTree } from "../ForkTree";
+import CVisitor from "./CVisitor";
+import { Process } from "./Process";
 
 export default class CVisitorImplemented extends CVisitor {
   constructor() {
     super();
     this.tree = new ForkTree();
-    this.variables = new Map();
-    this.processList = [];
-    this.isActivated = true;
+    this.pidController = this.tree.pidController;
+    this.currentProcess = new Process(null, this.tree.root);
+    this.currentProcess.count = 2;
+    this.currentProcess.pid = 1;
+    this.processList = [this.currentProcess];
   }
 
-  visitChildren(ctx) {
-    if (!this.isActivated) return null;
+  visitChildren(ctx, p = false) {
+    if (!this.currentProcess.isActivated) return null;
     return super.visitChildren(ctx);
+  }
+
+  cloneMap(map) {
+    const newMap = new Map();
+
+    for (let [k, v] of map.entries()) {
+      newMap.set(k, Object.assign({}, v));
+    }
+    return newMap;
+  }
+
+  createProcess() {
+    let node = this.currentProcess.tree.addChild(this.pidController);
+    let newProcess = new Process(this.currentBlockItem, node);
+    newProcess.pid = node.pid;
+    this.processList.push(newProcess);
+    newProcess.variables = this.cloneMap(this.currentProcess.variables);
+    return node.pid;
   }
 
   visitCompilationUnit(ctx) {
     this.visitChildren(ctx);
 
-    console.warn("this.variables:", this.variables);
+    console.warn(
+      "this.currentProcess.variables:",
+      this.currentProcess.variables
+    );
     console.warn("this.selectionConditions:", this.selectionConditions);
     console.warn("this:", this);
     console.warn("this.processList:", this.processList);
-    this.isActivated = false;
+    this.currentProcess.isActivated = false;
+    for (let p of this.processList) {
+      for (let [k, v] of p.variables.entries()) {
+        // console.log(k, v);
+      }
+    }
   }
 
   visitCompoundStatement(ctx) {
     ctx.isChild = true;
     this.visitChildren(ctx);
-
     const children = Array.from(ctx.children[1].children);
-    for (let process of this.processList) {
+    for (let process of this.processList.slice(1)) {
+      let flag = false;
       for (let i = 0; i < children.length; i++) {
-        if (children[i] == process.blockItem) {
-          console.log("pid", process.pid, "slice", children.slice(i));
+        if (children[i] == process.blockItem || flag) {
+          console.error("process text", children[i].getText());
+          flag = true;
+          this.currentProcess = process;
+          this.visitChildren(children[i]);
+          children[i];
         }
       }
     }
@@ -46,12 +79,6 @@ export default class CVisitorImplemented extends CVisitor {
 
   visitBlockItem(ctx) {
     this.currentBlockItem = ctx;
-    let parent = ctx.parentCtx.children;
-
-    for (let i = 0; i < parent.length; i++) {
-      if (parent[i] == this.currentBlockItem) {
-      }
-    }
 
     return this.visitChildren(ctx);
   }
@@ -63,8 +90,8 @@ export default class CVisitorImplemented extends CVisitor {
     if (ctx.children.length == 2) {
       const name = ctx.children[0].children[1].getText();
       const type = ctx.children[0].children[0].getText();
-      if (!this.variables.get(name)) {
-        this.variables.set(name, { type, name, value: null });
+      if (!this.currentProcess.variables.get(name)) {
+        this.currentProcess.variables.set(name, { type, name, value: null });
       } else {
         console.error(
           `A variável '${name}' já foi definida. Erro na função visitDeclaration. Linha ${ctx.start.line}.`
@@ -73,9 +100,9 @@ export default class CVisitorImplemented extends CVisitor {
     } else {
       const type = ctx.children[0].getText();
       for (let variable of result[1]) {
-        if (!this.variables.get(variable.name)) {
+        if (!this.currentProcess.variables.get(variable.name)) {
           variable.type = type;
-          this.variables.set(variable.name, variable);
+          this.currentProcess.variables.set(variable.name, variable);
         } else {
           console.error(
             `A variável '${variable.name}' já foi definida. Erro na função visitDeclaration. Linha ${ctx.start.line}.`
@@ -125,16 +152,38 @@ export default class CVisitorImplemented extends CVisitor {
     return this.visitChildren(ctx)[0];
   }
 
+  visitStatement(ctx) {
+    this.currentProcess.count++;
+    console.warn(
+      "statement Process",
+      this.currentProcess.pid,
+      this.currentProcess.count
+    );
+    return this.visitChildren(ctx)[0];
+  }
+
   visitSelectionStatement(ctx) {
     if (ctx.children[0].getText() == "if") {
       const state = this.visitChildren(ctx.children[2])[0];
+      console.debug("state", state, "ctx", ctx.getText());
+      // if (typeof state == typeof Object() && state != null) {
+      //   if (state.value) {
+      //     let a = this.visitChildren(ctx.children[4]);
+      //     console.debug("passou a", a, ctx.children);
+
+      //     return a;
+      //   }
+      //   return null;
+      // }
+
       if (state) {
+        console.log("selectionSt state true", state);
         let a = this.visitChildren(ctx.children[4]);
         return a;
       }
       return null;
     }
-    return ctx.visitChildren(ctx);
+    return ctx.visitChildren(ctx)[0];
   }
 
   visitExpression(ctx) {
@@ -150,7 +199,7 @@ export default class CVisitorImplemented extends CVisitor {
     const result = this.visitChildren(ctx);
     if (ctx.children.length > 1 && ctx.children.length < 4) {
       const elements = ctx.children;
-      const variable = this.variables.get(elements[0].getText());
+      const variable = this.currentProcess.variables.get(elements[0].getText());
       let number = Number(elements[0].getText());
 
       if (variable) {
@@ -324,6 +373,7 @@ export default class CVisitorImplemented extends CVisitor {
     const result = this.visitChildren(ctx);
     if (ctx.children.length > 1) {
       let state = result[0];
+      console.log("\nequality result", result, "\n\n\n.");
       for (let i = 0; i < ctx.children.length; i++) {
         if ((i + 1) % 2 == 0) {
           const elements = ctx.children;
@@ -470,7 +520,6 @@ export default class CVisitorImplemented extends CVisitor {
     return this.visitChildren(ctx)[0];
   }
 
-  // TODO: UnaryOperator
   visitUnaryExpression(ctx) {
     const result = this.visitChildren(ctx);
     const element = result[0];
@@ -524,6 +573,8 @@ export default class CVisitorImplemented extends CVisitor {
           }.`
         );
       }
+    } else if (typeof element == typeof Object() && element != null) {
+      return element.value;
     }
     return element;
   }
@@ -532,18 +583,25 @@ export default class CVisitorImplemented extends CVisitor {
     const result = this.visitChildren(ctx);
     let element = result[0];
 
-    if (this.isActivated) {
+    console.log("Postfix text", ctx.getText());
+
+    if (this.currentProcess.isActivated) {
       if (ctx.getText() === "exit(0)") {
-        this.isActivated = false;
+        this.currentProcess.isActivated = false;
         return null;
       } else if (ctx.getText() === "fork()") {
-        let node = this.tree.addChild();
-        this.processList.push({
-          pid: node,
-          forkReturn: 0,
-          blockItem: this.currentBlockItem,
-        });
-        return node;
+        if (this.currentProcess.count == 1) {
+          return 0;
+        }
+        console.log(
+          "Pid: ${",
+          this.currentProcess.pid,
+          "} - count: ${",
+          this.currentProcess.count,
+          "}"
+        );
+
+        return this.createProcess();
       } else if (ctx.children.length === 2) {
         if (typeof element === typeof Number()) {
           switch (ctx.children[1].getText()) {
@@ -611,7 +669,7 @@ export default class CVisitorImplemented extends CVisitor {
         return this.visitChildren(ctx);
       }
     } else {
-      let variable = this.variables.get(ctx.getText());
+      let variable = this.currentProcess.variables.get(ctx.getText());
       let number = Number(ctx.getText());
       if (variable) {
         return variable;
