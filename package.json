@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --mode=development",
-    "generate": "java org.antlr.v4.Tool C.g4 -Dlanguage=JavaScript -o src/parser"
+    "generate": "java org.antlr.v4.Tool C.g4 -Dlanguage=JavaScript -visitor -listener -o src/parser",
+    "start": "webpack --watch"
   },
   "keywords": [],
   "author": "",

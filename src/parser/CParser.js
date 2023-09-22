@@ -2,6 +2,8 @@
 // jshint ignore: start
 import antlr4 from 'antlr4';
 import CListener from './CListener.js';
+import CVisitor from './CVisitor.js';
+
 const serializedATN = [4,1,123,1093,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,
 7,4,2,5,7,5,2,6,7,6,2,7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,
 2,13,7,13,2,14,7,14,2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,
@@ -5408,6 +5410,14 @@ class PrimaryExpressionContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitPrimaryExpression(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -5461,6 +5471,14 @@ class GenericSelectionContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitGenericSelection(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitGenericSelection(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -5517,6 +5535,14 @@ class GenericAssocListContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitGenericAssocList(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -5562,6 +5588,14 @@ class GenericAssociationContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitGenericAssociation(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitGenericAssociation(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -5749,6 +5783,14 @@ class PostfixExpressionContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitPostfixExpression(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -5801,6 +5843,14 @@ class ArgumentExpressionListContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitArgumentExpressionList(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitArgumentExpressionList(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -5906,6 +5956,14 @@ class UnaryExpressionContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitUnaryExpression(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -5961,6 +6019,14 @@ class UnaryOperatorContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitUnaryOperator(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -6014,6 +6080,14 @@ class CastExpressionContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitCastExpression(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitCastExpression(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -6094,6 +6168,14 @@ class MultiplicativeExpressionContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitMultiplicativeExpression(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -6160,6 +6242,14 @@ class AdditiveExpressionContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitAdditiveExpression(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -6224,6 +6314,14 @@ class ShiftExpressionContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitShiftExpression(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitShiftExpression(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -6316,6 +6414,14 @@ class RelationalExpressionContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitRelationalExpression(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -6382,6 +6488,14 @@ class EqualityExpressionContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitEqualityExpression(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -6434,6 +6548,14 @@ class AndExpressionContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitAndExpression(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitAndExpression(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -6490,6 +6612,14 @@ class ExclusiveOrExpressionContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitExclusiveOrExpression(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -6542,6 +6672,14 @@ class InclusiveOrExpressionContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitInclusiveOrExpression(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitInclusiveOrExpression(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -6598,6 +6736,14 @@ class LogicalAndExpressionContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitLogicalAndExpression(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -6652,6 +6798,14 @@ class LogicalOrExpressionContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitLogicalOrExpression(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -6703,6 +6857,14 @@ class ConditionalExpressionContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitConditionalExpression(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -6752,6 +6914,14 @@ class AssignmentExpressionContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitAssignmentExpression(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitAssignmentExpression(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -6829,6 +6999,14 @@ class AssignmentOperatorContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitAssignmentOperator(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -6883,6 +7061,14 @@ class ExpressionContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitExpression(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -6916,6 +7102,14 @@ class ConstantExpressionContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitConstantExpression(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitConstantExpression(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -6965,6 +7159,14 @@ class DeclarationContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitDeclaration(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -7007,6 +7209,14 @@ class DeclarationSpecifiersContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitDeclarationSpecifiers(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -7047,6 +7257,14 @@ class DeclarationSpecifiers2Context extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitDeclarationSpecifiers2(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitDeclarationSpecifiers2(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -7098,6 +7316,14 @@ class DeclarationSpecifierContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitDeclarationSpecifier(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitDeclarationSpecifier(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -7154,6 +7380,14 @@ class InitDeclaratorListContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitInitDeclaratorList(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -7195,6 +7429,14 @@ class InitDeclaratorContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitInitDeclarator(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitInitDeclarator(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -7250,6 +7492,14 @@ class StorageClassSpecifierContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitStorageClassSpecifier(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitStorageClassSpecifier(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -7355,6 +7605,14 @@ class TypeSpecifierContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitTypeSpecifier(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -7406,6 +7664,14 @@ class StructOrUnionSpecifierContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitStructOrUnionSpecifier(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -7443,6 +7709,14 @@ class StructOrUnionContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitStructOrUnion(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitStructOrUnion(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -7485,6 +7759,14 @@ class StructDeclarationListContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitStructDeclarationList(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitStructDeclarationList(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -7534,6 +7816,14 @@ class StructDeclarationContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitStructDeclaration(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -7575,6 +7865,14 @@ class SpecifierQualifierListContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitSpecifierQualifierList(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitSpecifierQualifierList(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -7631,6 +7929,14 @@ class StructDeclaratorListContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitStructDeclaratorList(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -7672,6 +7978,14 @@ class StructDeclaratorContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitStructDeclarator(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitStructDeclarator(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -7729,6 +8043,14 @@ class EnumSpecifierContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitEnumSpecifier(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -7783,6 +8105,14 @@ class EnumeratorListContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitEnumeratorList(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -7826,6 +8156,14 @@ class EnumeratorContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitEnumerator(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -7859,6 +8197,14 @@ class EnumerationConstantContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitEnumerationConstant(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitEnumerationConstant(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -7908,6 +8254,14 @@ class AtomicTypeSpecifierContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitAtomicTypeSpecifier(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -7953,6 +8307,14 @@ class TypeQualifierContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitTypeQualifier(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitTypeQualifier(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -8010,6 +8372,14 @@ class FunctionSpecifierContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitFunctionSpecifier(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -8061,6 +8431,14 @@ class AlignmentSpecifierContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitAlignmentSpecifier(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -8109,6 +8487,14 @@ class DeclaratorContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitDeclarator(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitDeclarator(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -8206,6 +8592,14 @@ class DirectDeclaratorContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitDirectDeclarator(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -8236,6 +8630,14 @@ class VcSpecificModiferContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitVcSpecificModifer(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitVcSpecificModifer(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -8291,6 +8693,14 @@ class GccDeclaratorExtensionContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitGccDeclaratorExtension(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitGccDeclaratorExtension(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -8352,6 +8762,14 @@ class GccAttributeSpecifierContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitGccAttributeSpecifier(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -8404,6 +8822,14 @@ class GccAttributeListContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitGccAttributeList(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitGccAttributeList(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -8467,6 +8893,14 @@ class GccAttributeContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitGccAttribute(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitGccAttribute(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -8535,6 +8969,14 @@ class NestedParenthesesBlockContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitNestedParenthesesBlock(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -8601,6 +9043,14 @@ class PointerContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitPointer(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -8641,6 +9091,14 @@ class TypeQualifierListContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitTypeQualifierList(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitTypeQualifierList(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -8684,6 +9142,14 @@ class ParameterTypeListContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitParameterTypeList(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitParameterTypeList(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -8740,6 +9206,14 @@ class ParameterListContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitParameterList(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -8785,6 +9259,14 @@ class ParameterDeclarationContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitParameterDeclaration(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitParameterDeclaration(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -8842,6 +9324,14 @@ class IdentifierListContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitIdentifierList(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -8879,6 +9369,14 @@ class TypeNameContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitTypeName(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitTypeName(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -8929,6 +9427,14 @@ class AbstractDeclaratorContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitAbstractDeclarator(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitAbstractDeclarator(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -9017,6 +9523,14 @@ class DirectAbstractDeclaratorContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitDirectAbstractDeclarator(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -9050,6 +9564,14 @@ class TypedefNameContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitTypedefName(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitTypedefName(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -9101,6 +9623,14 @@ class InitializerContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitInitializer(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitInitializer(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -9168,6 +9698,14 @@ class InitializerListContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitInitializerList(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -9205,6 +9743,14 @@ class DesignationContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitDesignation(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitDesignation(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -9247,6 +9793,14 @@ class DesignatorListContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitDesignatorList(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitDesignatorList(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -9298,6 +9852,14 @@ class DesignatorContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitDesignator(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitDesignator(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -9365,6 +9927,14 @@ class StaticAssertDeclarationContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitStaticAssertDeclaration(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitStaticAssertDeclaration(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -9473,6 +10043,14 @@ class StatementContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitStatement(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -9528,6 +10106,14 @@ class LabeledStatementContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitLabeledStatement(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -9569,6 +10155,14 @@ class CompoundStatementContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitCompoundStatement(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitCompoundStatement(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -9613,6 +10207,14 @@ class BlockItemListContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitBlockItemList(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -9652,6 +10254,14 @@ class BlockItemContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitBlockItem(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -9689,6 +10299,14 @@ class ExpressionStatementContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitExpressionStatement(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitExpressionStatement(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -9755,6 +10373,14 @@ class SelectionStatementContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitSelectionStatement(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitSelectionStatement(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -9824,6 +10450,14 @@ class IterationStatementContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitIterationStatement(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -9886,6 +10520,14 @@ class ForConditionContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitForCondition(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -9923,6 +10565,14 @@ class ForDeclarationContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitForDeclaration(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitForDeclaration(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -9977,6 +10627,14 @@ class ForExpressionContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitForExpression(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitForExpression(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -10042,6 +10700,14 @@ class JumpStatementContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitJumpStatement(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -10079,6 +10745,14 @@ class CompilationUnitContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitCompilationUnit(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitCompilationUnit(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -10123,6 +10797,14 @@ class TranslationUnitContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitTranslationUnit(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -10164,6 +10846,14 @@ class ExternalDeclarationContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitExternalDeclaration(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitExternalDeclaration(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -10213,6 +10903,14 @@ class FunctionDefinitionContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitFunctionDefinition(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -10253,6 +10951,14 @@ class DeclarationListContext extends antlr4.ParserRuleContext {
 	    if(listener instanceof CListener ) {
 	        listener.exitDeclarationList(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof CVisitor ) {
+	        return visitor.visitDeclarationList(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 

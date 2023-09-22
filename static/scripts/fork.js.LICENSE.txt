@@ -1,0 +1,1 @@
+/*! For license information please see antlr4.web.js.LICENSE.txt */
