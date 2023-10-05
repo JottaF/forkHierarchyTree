@@ -3,7 +3,7 @@ import { ForkTree } from "../ForkTree";
 export class Process {
   /**
    *
-   * @param {blockItem} blockItem
+   * @param {blockItem} number
    * @param {ForkTree} node
    */
   constructor(blockItem, node) {
