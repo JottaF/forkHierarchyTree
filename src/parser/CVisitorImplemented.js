@@ -11,6 +11,7 @@ export default class CVisitorImplemented extends CVisitor {
     this.currentProcess.count = 2;
     this.currentProcess.pid = 1;
     this.processList = [this.currentProcess];
+    this.currentBlockItemPosition = 0;
   }
 
   visitChildren(ctx, p = false) {
@@ -29,13 +30,15 @@ export default class CVisitorImplemented extends CVisitor {
 
   createProcess() {
     let node = this.currentProcess.tree.addChild(this.pidController);
-    let newProcess = new Process(
-      this.blockItemList.children.indexOf(this.currentBlockItem),
-      node
-    );
+    let currentBlockItemP =
+      typeof this.currentBlockItem == "number"
+        ? this.currentBlockItem
+        : this.blockItemList.children.indexOf(this.currentBlockItem);
+    let newProcess = new Process(currentBlockItemP, node);
     newProcess.pid = node.pid;
     this.processList.push(newProcess);
     newProcess.variables = this.cloneMap(this.currentProcess.variables);
+    this.currentProcess.addProcess(newProcess);
     return node.pid;
   }
 
@@ -65,22 +68,42 @@ export default class CVisitorImplemented extends CVisitor {
     ctx.isChild = true;
     this.visitChildren(ctx);
     const children = Array.from(this.blockItemList.children);
-    let j = 1;
-    while (true) {
-      if (j >= this.processList.length) {
-        break;
-      }
-      let process = this.processList[j];
+    // let j = 1;
+    // while (true) {
+    //   if (j >= this.processList.length) {
+    //     break;
+    //   }
+    //   let process = this.processList[j];
+    //   let flag = false;
+    //   for (let i = 0; i < children.length; i++) {
+    //     if (i == process.blockItem || flag) {
+    //       console.error("process text", children[i].getText());
+    //       flag = true;
+    //       this.currentProcess = process;
+    //       this.visitChildren(children[i]);
+    //     }
+    //   }
+    //   j++;
+    // }
+    let process = this.processList[1];
+    while (process.nextProcess) {
       let flag = false;
+      this.currentProcess = process;
       for (let i = 0; i < children.length; i++) {
-        if (i == process.blockItem || flag) {
-          console.error("process text", children[i].getText());
+        if ((i == process.blockItem || flag) && process.isActivated) {
           flag = true;
-          this.currentProcess = process;
+          console.error(
+            "process pid",
+            process.pid,
+            "process text",
+            children[i].getText()
+          );
+          this.currentBlockItem = i;
           this.visitChildren(children[i]);
         }
+        this.currentProcess.count++;
       }
-      j++;
+      process = process.nextProcess;
     }
   }
 
@@ -99,9 +122,10 @@ export default class CVisitorImplemented extends CVisitor {
       ctx.parentCtx.parentCtx.parentCtx.constructor.name ==
       "FunctionDefinitionContext"
     ) {
-      this.currentProcess.count++;
       this.currentBlockItem = ctx;
+      this.currentBlockItemPosition = this.blockItemList.children.indexOf(ctx);
     }
+    this.currentProcess.count++;
 
     return this.visitChildren(ctx);
   }
@@ -613,7 +637,7 @@ export default class CVisitorImplemented extends CVisitor {
         this.currentProcess.isActivated = false;
         return null;
       } else if (ctx.getText() === "fork()") {
-        if (this.currentProcess.count == 1) {
+        if (this.currentProcess.count <= 2) {
           return 0;
         }
         console.log(

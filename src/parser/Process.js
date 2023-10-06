@@ -12,6 +12,15 @@ export class Process {
     this.isActivated = true;
     this.tree = node;
     this.count = 0;
-    this.pid = 0;
+    this.pid = node.pid;
+    this.nextProcess = null;
+  }
+
+  addProcess(process) {
+    if (this.nextProcess != null) {
+      this.nextProcess.addProcess(process);
+    } else {
+      this.nextProcess = process;
+    }
   }
 }
