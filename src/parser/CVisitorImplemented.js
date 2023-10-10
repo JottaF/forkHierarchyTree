@@ -7,14 +7,17 @@ export default class CVisitorImplemented extends CVisitor {
     super();
     this.tree = new ForkTree();
     this.pidController = this.tree.pidController;
+
     this.currentProcess = new Process(null, this.tree.root);
     this.currentProcess.count = 2;
     this.currentProcess.pid = 1;
+    this.currentProcess.isSleeping = false;
+
     this.processList = [this.currentProcess];
     this.currentBlockItemPosition = 0;
   }
 
-  visitChildren(ctx, p = false) {
+  visitChildren(ctx) {
     if (!this.currentProcess.isActivated) return null;
     return super.visitChildren(ctx);
   }
@@ -105,6 +108,10 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitDeclaration(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
     const result = this.visitChildren(ctx);
 
     if (ctx.children.length == 2) {
@@ -134,6 +141,10 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitInitDeclaratorList(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
     const result = this.visitChildren(ctx);
     const resultLen = result.length;
     const newResult = [];
@@ -148,6 +159,10 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitInitDeclarator(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
     const result = this.visitChildren(ctx);
     if (ctx.children.length > 1 && ctx.children.length < 4) {
       result[0].value = result[2];
@@ -156,14 +171,26 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitDeclarator(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
     return this.visitChildren(ctx)[0];
   }
 
   visitDirectDeclarator(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
     return { type: null, name: ctx.getText(), value: null };
   }
 
   visitInitializer(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
     if (ctx.children.length > 1) {
       console.error(
         `Erro na função 'visitInitializer'. Essa expressão não está disponível. Linha ${ctx.start.line}.`
@@ -173,11 +200,19 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitStatement(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
     this.currentProcess.count++;
     return this.visitChildren(ctx)[0];
   }
 
   visitSelectionStatement(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
     if (ctx.children[0].getText() == "if") {
       const state = this.visitChildren(ctx.children[2])[0];
       console.debug("state", state, "ctx", ctx.getText());
@@ -192,6 +227,10 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitExpression(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
     if (ctx.children.length > 1) {
       console.error(
         `Erro na função 'visitExpression'. Essa expressão não está disponível. Linha ${ctx.start.line}`
@@ -201,6 +240,10 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitAssignmentExpression(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
     const result = this.visitChildren(ctx);
     if (ctx.children.length > 1 && ctx.children.length < 4) {
       const elements = ctx.children;
@@ -287,6 +330,10 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitConditionalExpression(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
     if (ctx.children.length > 1) {
       console.error(
         `Erro na função 'visitConditionalExpression'. Essa expressão não está disponível. Linha ${ctx.start.line}`
@@ -296,6 +343,10 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitLogicalOrExpression(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
     const result = this.visitChildren(ctx);
     if (ctx.children.length > 1) {
       let state = result[0];
@@ -321,6 +372,10 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitLogicalAndExpression(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
     const result = this.visitChildren(ctx);
     if (ctx.children.length > 1) {
       let state = result[0];
@@ -346,6 +401,10 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitInclusiveOrExpression(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
     if (ctx.children.length > 1) {
       console.error(
         `Erro na função 'visitInclusiveOrExpression'. Essa expressão não está disponível. Linha ${ctx.start.line}`
@@ -355,6 +414,10 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitExclusiveOrExpression(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
     if (ctx.children.length > 1) {
       console.error(
         `Erro na função 'visitExclusiveOrExpression'. Essa expressão Cast não está disponível. Linha ${ctx.start.line}`
@@ -364,6 +427,10 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitAndExpression(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
     if (ctx.children.length > 1) {
       console.error(
         `Erro na função 'visitAndExpression'. Essa expressão  não está disponível. Linha ${ctx.start.line}`
@@ -373,6 +440,10 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitEqualityExpression(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
     const result = this.visitChildren(ctx);
     if (ctx.children.length > 1) {
       let state = result[0];
@@ -402,6 +473,10 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitRelationalExpression(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
     const result = this.visitChildren(ctx);
     if (ctx.children.length > 1) {
       let state = result[0];
@@ -439,6 +514,10 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitShiftExpression(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
     if (ctx.children.length > 1) {
       console.error(
         `Erro na função 'visitShiftExpression'. Expressão de Shift não está disponível. Linha ${ctx.start.line}`
@@ -448,6 +527,10 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitAdditiveExpression(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
     const result = this.visitChildren(ctx);
     if (ctx.children.length > 1) {
       let product = result[0];
@@ -477,6 +560,10 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitMultiplicativeExpression(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
     const result = this.visitChildren(ctx);
     if (ctx.children.length > 1) {
       let product = result[0];
@@ -510,6 +597,10 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitCastExpression(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
     if (ctx.children.length > 1) {
       console.error(
         `Erro na função 'visitCastExpression'. Expressão de Cast não está disponível. Linha ${ctx.start.line}`
@@ -519,6 +610,10 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitUnaryExpression(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
     const result = this.visitChildren(ctx);
     const element = result[0];
     const variable = result[1];
@@ -578,6 +673,10 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitPostfixExpression(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
     const result = this.visitChildren(ctx);
     let element = result[0];
 
@@ -646,6 +745,10 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitPrimaryExpression(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
     if (ctx.children.length > 1) {
       const element = ctx.children;
       if (element[0].getText() === "(" && element[2].getText() === ")") {
