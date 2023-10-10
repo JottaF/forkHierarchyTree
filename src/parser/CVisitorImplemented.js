@@ -15,6 +15,7 @@ export default class CVisitorImplemented extends CVisitor {
 
     this.processList = [this.currentProcess];
     this.currentBlockItemPosition = 0;
+    this.currentBlockItem = null;
   }
 
   visitChildren(ctx) {
@@ -65,7 +66,7 @@ export default class CVisitorImplemented extends CVisitor {
     ) {
       return this.visitChildren(ctx)[0];
     }
-    ctx.isChild = true;
+
     this.visitChildren(ctx);
     const children = Array.from(this.blockItemList.children);
 
@@ -77,7 +78,6 @@ export default class CVisitorImplemented extends CVisitor {
         if ((i == process.blockItem || flag) && process.isActivated) {
           flag = true;
           this.currentBlockItem = i;
-          let text = children[i].getText();
           this.visitChildren(children[i]);
         }
       }
@@ -96,12 +96,10 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitBlockItem(ctx) {
-    if (
-      ctx.parentCtx.parentCtx.parentCtx.constructor.name ==
-      "FunctionDefinitionContext"
-    ) {
-      this.currentBlockItem = ctx;
-      this.currentBlockItemPosition = this.blockItemList.children.indexOf(ctx);
+    this.currentBlockItem = ctx;
+
+    if (this.currentProcess.blockItem == ctx) {
+      this.currentProcess.isSleeping = false;
     }
 
     return this.visitChildren(ctx);
