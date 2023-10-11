@@ -34,15 +34,12 @@ export default class CVisitorImplemented extends CVisitor {
 
   createProcess() {
     let node = this.currentProcess.tree.addChild(this.pidController);
-    let currentBlockItemP =
-      typeof this.currentBlockItem == "number"
-        ? this.currentBlockItem
-        : this.blockItemList.children.indexOf(this.currentBlockItem);
-    let newProcess = new Process(currentBlockItemP, node);
+
+    let newProcess = new Process(this.currentBlockItem, node);
     newProcess.pid = node.pid;
-    this.processList.push(newProcess);
     newProcess.variables = this.cloneMap(this.currentProcess.variables);
-    this.currentProcess.addProcess(newProcess);
+
+    this.processList.push(newProcess);
     return node.pid;
   }
 
@@ -68,20 +65,19 @@ export default class CVisitorImplemented extends CVisitor {
     }
 
     this.visitChildren(ctx);
-    const children = Array.from(this.blockItemList.children);
 
     let process = this.processList[1];
-    while (process.nextProcess) {
-      let flag = false;
-      this.currentProcess = process;
-      for (let i = 0; i < children.length; i++) {
-        if ((i == process.blockItem || flag) && process.isActivated) {
-          flag = true;
-          this.currentBlockItem = i;
-          this.visitChildren(children[i]);
-        }
+    let processIndex = 1;
+    while (true) {
+      if (processIndex > this.processList.length - 1) {
+        break;
       }
-      process = process.nextProcess;
+
+      this.currentProcess = process;
+      this.visitChildren(this.blockItemList);
+
+      processIndex++;
+      process = this.processList[processIndex];
     }
   }
 

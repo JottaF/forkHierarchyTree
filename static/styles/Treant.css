@@ -1,44 +1,157 @@
 /* required LIB STYLES */
 /* .Treant se automatski dodaje na svaki chart conatiner */
-.Treant { position: relative; overflow: hidden; padding: 0 !important; }
+.Treant {
+  position: relative;
+  overflow: hidden;
+  padding: 0 !important;
+}
 .Treant > .node,
-.Treant > .pseudo { position: absolute; display: block; visibility: hidden; }
+.Treant > .pseudo {
+  position: absolute;
+  display: block;
+  visibility: hidden;
+}
 .Treant.Treant-loaded .node,
-.Treant.Treant-loaded .pseudo { visibility: visible; }
-.Treant > .pseudo { width: 0; height: 0; border: none; padding: 0; }
-.Treant .collapse-switch { width: 3px; height: 3px; display: block; border: 1px solid black; position: absolute; top: 1px; right: 1px; cursor: pointer; }
-.Treant .collapsed .collapse-switch { background-color: #868DEE; }
-.Treant > .node img {	border: none; float: left; }
+.Treant.Treant-loaded .pseudo {
+  visibility: visible;
+}
+.Treant > .pseudo {
+  width: 0;
+  height: 0;
+  border: none;
+  padding: 0;
+}
+.Treant .collapse-switch {
+  width: 3px;
+  height: 3px;
+  display: block;
+  border: 1px solid black;
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  cursor: pointer;
+}
+.Treant .collapsed .collapse-switch {
+  background-color: #868dee;
+}
+.Treant > .node img {
+  border: none;
+  float: left;
+}
 
 /*basic-example*/
-body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td { margin:0; padding:0; }
-table { border-collapse:collapse; border-spacing:0; }
-fieldset,img { border:0; }
-address,caption,cite,code,dfn,em,strong,th,var { font-style:normal; font-weight:normal; }
-caption,th { text-align:left; }
-h1,h2,h3,h4,h5,h6 { font-size:100%; font-weight:normal; }
-q:before,q:after { content:''; }
-abbr,acronym { border:0; }
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+form,
+fieldset,
+input,
+textarea,
+p,
+blockquote,
+th,
+td {
+  margin: 0;
+  padding: 0;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+fieldset,
+img {
+  border: 0;
+}
+address,
+caption,
+cite,
+code,
+dfn,
+em,
+strong,
+th,
+var {
+  font-style: normal;
+  font-weight: normal;
+}
+caption,
+th {
+  text-align: left;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: 100%;
+  font-weight: normal;
+}
+q:before,
+q:after {
+  content: "";
+}
+abbr,
+acronym {
+  border: 0;
+}
 
-body { background: #fff; }
+body {
+  background: #fff;
+}
 /* optional Container STYLES */
-.chart { height: 400px; margin: 5px; width: 400px; }
-.Treant > .node {  }
-.Treant > p { font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; font-weight: bold; font-size: 12px; }
-.node-name { font-weight: bold;}
+.chart {
+  height: 400px;
+  margin: 5px;
+  width: 400px;
+}
+.Treant > .node {
+}
+.Treant > p {
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue",
+    Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: bold;
+  font-size: 12px;
+}
+.node-name {
+  font-weight: bold;
+}
 
 .nodeExample1 {
-    padding: 5px;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
-    background-color: #ffffff;
-    border: 1px solid #000;
-    width: 70px;
-    font-family: Tahoma;
-    font-size: 12px;
+  padding: 5px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background-color: #ffffff;
+  border: 1px solid #000;
+  width: 70px;
+  font-family: Tahoma;
+  font-size: 12px;
 }
 
 .nodeExample1 img {
-    margin-right:  10px;
+  margin-right: 10px;
+}
+
+a.collapse-switch {
+  width: 100% !important;
+  height: 100% !important;
+  top: 0 !important;
+  right: 0 !important;
+}
+
+.Treant .collapsed .collapse-switch {
+  background-color: #eeb68659;
 }

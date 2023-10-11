@@ -14,16 +14,5 @@ export class Process {
     this.tree = node;
     this.count = 0;
     this.pid = node.pid;
-    this.nextProcess = null;
-  }
-
-  //TODO: Percorrer a arvoré até achar o nó que originou o processo e, a partir dele, iniciar o processo
-
-  addProcess(process) {
-    if (this.nextProcess != null) {
-      this.nextProcess.addProcess(process);
-    } else {
-      this.nextProcess = process;
-    }
   }
 }
