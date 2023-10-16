@@ -184,7 +184,6 @@ export default class CVisitorImplemented extends CVisitor {
     if (this.currentProcess.isSleeping) {
       return this.visitChildren(ctx);
     }
-
     if (ctx.children.length > 1) {
       console.error(
         `Erro na função 'visitInitializer'. Essa expressão não está disponível. Linha ${ctx.start.line}.`
@@ -209,7 +208,6 @@ export default class CVisitorImplemented extends CVisitor {
 
     if (ctx.children[0].getText() == "if") {
       const state = this.visitChildren(ctx.children[2])[0];
-      console.debug("state", state, "ctx", ctx.getText());
 
       if (state) {
         let a = this.visitChildren(ctx.children[4]);
