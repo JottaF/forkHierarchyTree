@@ -57,7 +57,6 @@ export class ForkTree {
         HTMLclass: "nodeExample1",
         collapsable: true,
       },
-      animateOnInit: true,
       animation: {
         nodeAnimation: "easeOutCubic",
       },
