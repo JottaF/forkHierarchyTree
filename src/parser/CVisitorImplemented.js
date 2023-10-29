@@ -77,6 +77,7 @@ export default class CVisitorImplemented extends CVisitor {
       this.visitChildren(this.blockItemList);
 
       processIndex++;
+      this.currentProcess.isActivated = false;
       process = this.processList[processIndex];
     }
   }
@@ -106,6 +107,7 @@ export default class CVisitorImplemented extends CVisitor {
       return this.visitChildren(ctx);
     }
 
+    this.currentProcess.count++;
     const result = this.visitChildren(ctx);
 
     if (ctx.children.length == 2) {
@@ -210,8 +212,9 @@ export default class CVisitorImplemented extends CVisitor {
       const state = this.visitChildren(ctx.children[2])[0];
 
       if (state) {
-        let a = this.visitChildren(ctx.children[4]);
-        return a;
+        return this.visitChildren(ctx.children[4]);
+      } else if (ctx.children.length == 7) {
+        return this.visitChildren(ctx.children[6]);
       }
       return null;
     }
