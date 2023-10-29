@@ -212,8 +212,9 @@ export default class CVisitorImplemented extends CVisitor {
       const state = this.visitChildren(ctx.children[2])[0];
 
       if (state) {
-        let a = this.visitChildren(ctx.children[4]);
-        return a;
+        return this.visitChildren(ctx.children[4]);
+      } else if (ctx.children.length == 7) {
+        return this.visitChildren(ctx.children[6]);
       }
       return null;
     }
