@@ -19,7 +19,10 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitChildren(ctx) {
-    if (!this.currentProcess.isActivated) return null;
+    console.log(this.currentProcess.pid, ctx.constructor.name, ctx.getText());
+    if (!this.currentProcess.isActivated) {
+      return null;
+    }
     return super.visitChildren(ctx);
   }
 
@@ -38,6 +41,7 @@ export default class CVisitorImplemented extends CVisitor {
     let newProcess = new Process(this.currentBlockItem, node);
     newProcess.pid = node.pid;
     newProcess.variables = this.cloneMap(this.currentProcess.variables);
+    newProcess.context = { ...this.currentProcess.context };
 
     this.processList.push(newProcess);
     return node.pid;
@@ -58,8 +62,9 @@ export default class CVisitorImplemented extends CVisitor {
 
   visitCompoundStatement(ctx) {
     if (
-      this.currentProcess.pid != 1 &&
-      ctx.parentCtx.constructor.name == "StatementContext"
+      (this.currentProcess.pid != 1 &&
+        ctx.parentCtx.constructor.name == "StatementContext") ||
+      ctx.parentCtx.constructor.name != "FunctionDefinitionContext"
     ) {
       return this.visitChildren(ctx)[0];
     }
@@ -200,6 +205,15 @@ export default class CVisitorImplemented extends CVisitor {
     }
 
     this.currentProcess.count++;
+
+    if (
+      this.currentProcess.pid != 1 &&
+      ctx.parentCtx.children.indexOf(ctx) == 6 &&
+      ctx.parentCtx.ifCondition
+    ) {
+      return null;
+    }
+
     return this.visitChildren(ctx)[0];
   }
 
@@ -212,7 +226,11 @@ export default class CVisitorImplemented extends CVisitor {
       const state = this.visitChildren(ctx.children[2])[0];
 
       if (state) {
-        return this.visitChildren(ctx.children[4]);
+        ctx.ifCondition = true;
+        this.currentProcess.context.currentSelectionState = ctx;
+        const result = this.visitChildren(ctx.children[4]);
+        this.currentProcess.context.currentSelectionState = null;
+        return result;
       } else if (ctx.children.length == 7) {
         return this.visitChildren(ctx.children[6]);
       }
