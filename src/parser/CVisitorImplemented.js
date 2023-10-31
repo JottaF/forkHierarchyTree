@@ -19,7 +19,6 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitChildren(ctx) {
-    console.log(this.currentProcess.pid, ctx.constructor.name, ctx.getText());
     if (!this.currentProcess.isActivated) {
       return null;
     }
