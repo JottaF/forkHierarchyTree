@@ -14,5 +14,6 @@ export class Process {
     this.tree = node;
     this.count = 0;
     this.pid = node.pid;
+    this.context = {};
   }
 }
