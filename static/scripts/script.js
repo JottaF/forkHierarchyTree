@@ -3,6 +3,13 @@ require.config({ paths: { vs: "https://unpkg.com/monaco-editor/min/vs" } });
 
 // Carrega o módulo principal do Monaco Editor
 require(["vs/editor/editor.main"], function () {
+  monaco.languages.register({
+    id: "c",
+    extensions: [".c", ".h"], // Extensões de arquivos associadas à linguagem C
+    aliases: ["C", "c"], // Aliases para a linguagem C
+    mimetypes: ["text/x-csrc", "text/x-chdr"], // Tipos MIME associados à linguagem C
+  });
+
   // Inicializa o Monaco Editor dentro do elemento 'c-code-editor'
   window.editor = monaco.editor.create(
     document.getElementById("c-code-editor"),
@@ -11,9 +18,18 @@ require(["vs/editor/editor.main"], function () {
         "#include <stdio.h>",
         "",
         "int main() {",
-        '\tprintf("Olá, mundo!");',
-        '\tfork();',
-        "\treturn 0;",
+        "\tif(fork() == 0) {",
+        "\t\texit(0);",
+        "\t}",
+        "\tif(fork() == 0) {",
+        "\t\tprint(0);",
+        "\t}",
+        "\tif(fork() == 0) {",
+        "\t\tprint(0);",
+        "\t}",
+        "\tif(fork() == 0) {",
+        "\t\texit(0);",
+        "\t}",
         "}",
       ].join("\n"),
       language: "c",
@@ -25,12 +41,12 @@ require(["vs/editor/editor.main"], function () {
 
 function gerarArvore() {
   const entrada = window.editor.getValue();
+
   if (entrada == "") {
     alert("Insira um código C para gerar a árvore sintática!");
     return;
   }
   const cod = ForkJS.parse(entrada);
-  console.log(cod.bundleTree());
   new Treant(cod.bundleTree());
 }
 
