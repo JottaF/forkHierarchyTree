@@ -93,7 +93,21 @@ export default class CVisitorImplemented extends CVisitor {
       this.blockItemList = ctx;
     }
 
-    return this.visitChildren(ctx);
+    const result = this.visitChildren(ctx);
+
+    if (
+      this.currentProcess.pid != 1 &&
+      !this.currentProcess.isSleeping &&
+      ctx.parentCtx.parentCtx.parentCtx.constructor.name ==
+        "IterationStatementContext" &&
+      ctx.parentCtx.parentCtx.parentCtx.notExecuted &&
+      !this.currentProcess.returnedToIteration
+    ) {
+      this.currentProcess.returnedToIteration = true;
+      return this.visitChildren(ctx.parentCtx.parentCtx.parentCtx.parentCtx);
+    }
+
+    return result;
   }
 
   visitBlockItem(ctx) {
@@ -216,6 +230,30 @@ export default class CVisitorImplemented extends CVisitor {
     return this.visitChildren(ctx)[0];
   }
 
+  visitIterationStatement(ctx) {
+    if (this.currentProcess.isSleeping) {
+      ctx.notExecuted = true;
+      return this.visitChildren(ctx);
+    }
+    if (ctx.children.length == 1) {
+      return this.visitChildren(ctx);
+    }
+
+    ctx.notExecuted = false;
+
+    if (ctx.children[0].getText() == "while") {
+      let conditionState = this.visitChildren(ctx.children[2])[0];
+      let result;
+      while (conditionState) {
+        result = this.visitChildren(ctx.children[4]);
+        conditionState = this.visitChildren(ctx.children[2])[0];
+      }
+      return result;
+    }
+
+    return this.visitChildren(ctx);
+  }
+
   visitSelectionStatement(ctx) {
     if (this.currentProcess.isSleeping) {
       return this.visitChildren(ctx);
@@ -226,9 +264,7 @@ export default class CVisitorImplemented extends CVisitor {
 
       if (state) {
         ctx.ifCondition = true;
-        this.currentProcess.context.currentSelectionState = ctx;
         const result = this.visitChildren(ctx.children[4]);
-        this.currentProcess.context.currentSelectionState = null;
         return result;
       } else if (ctx.children.length == 7) {
         return this.visitChildren(ctx.children[6]);
