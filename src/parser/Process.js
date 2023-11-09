@@ -12,7 +12,7 @@ export class Process {
     this.isActivated = true;
     this.isSleeping = true;
     this.tree = node;
-    this.count = 0;
+    this.forkEnabled = false;
     this.pid = node.pid;
     this.context = {};
   }

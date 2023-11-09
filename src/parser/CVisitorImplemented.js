@@ -9,7 +9,7 @@ export default class CVisitorImplemented extends CVisitor {
     this.pidController = this.tree.pidController;
 
     this.currentProcess = new Process(null, this.tree.root);
-    this.currentProcess.count = 2;
+    this.currentProcess.forkEnabled = true;
     this.currentProcess.pid = 1;
     this.currentProcess.isSleeping = false;
 
@@ -151,7 +151,6 @@ export default class CVisitorImplemented extends CVisitor {
       return this.visitChildren(ctx);
     }
 
-    this.currentProcess.count++;
     const result = this.visitChildren(ctx);
 
     if (ctx.children.length == 2) {
@@ -227,7 +226,6 @@ export default class CVisitorImplemented extends CVisitor {
       return this.visitChildren(ctx);
     }
 
-    this.currentProcess.count++;
     const result = this.visitChildren(ctx);
     const resultVar = result[1][0];
 
@@ -292,8 +290,6 @@ export default class CVisitorImplemented extends CVisitor {
     if (this.currentProcess.isSleeping) {
       return this.visitChildren(ctx);
     }
-
-    this.currentProcess.count++;
 
     if (
       this.currentProcess.pid != 1 &&
@@ -845,7 +841,8 @@ export default class CVisitorImplemented extends CVisitor {
         this.currentProcess.isActivated = false;
         return null;
       } else if (ctx.getText() === "fork()") {
-        if (this.currentProcess.count < 2) {
+        if (!this.currentProcess.forkEnabled) {
+          this.currentProcess.forkEnabled = true;
           return 0;
         }
 
