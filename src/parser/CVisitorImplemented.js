@@ -7,20 +7,22 @@ export default class CVisitorImplemented extends CVisitor {
     super();
     this.tree = new ForkTree();
     this.pidController = this.tree.pidController;
+    this.count = 1;
 
     this.currentProcess = new Process(null, this.tree.root);
-    this.currentProcess.count = 2;
+    this.currentProcess.forkEnabled = true;
     this.currentProcess.pid = 1;
     this.currentProcess.isSleeping = false;
 
     this.processList = [this.currentProcess];
-    this.currentBlockItemPosition = 0;
     this.currentBlockItem = null;
+    this.blockItemList = null;
+    this.currentBlockItemList = null;
   }
 
   visitChildren(ctx) {
     if (!this.currentProcess.isActivated) {
-      return null;
+      return [null];
     }
     return super.visitChildren(ctx);
   }
@@ -46,6 +48,25 @@ export default class CVisitorImplemented extends CVisitor {
     return node.pid;
   }
 
+  removeVariables(ctx) {
+    this.currentProcess.variables.forEach((context) => {
+      if (context.blockItem == ctx) {
+        this.currentProcess.variables.delete(context.name);
+      }
+    });
+  }
+
+  removeIteration(ctx) {
+    let list = this.currentProcess.context.iterationsNotExecuted;
+    if (list) {
+      this.currentProcess.context.iterationsNotExecuted = list.filter(
+        (context) => {
+          return context.ctx != ctx;
+        }
+      );
+    }
+  }
+
   visitCompilationUnit(ctx) {
     this.visitChildren(ctx);
 
@@ -65,7 +86,7 @@ export default class CVisitorImplemented extends CVisitor {
         ctx.parentCtx.constructor.name == "StatementContext") ||
       ctx.parentCtx.constructor.name != "FunctionDefinitionContext"
     ) {
-      return this.visitChildren(ctx)[0];
+      return this.visitChildren(ctx)[1];
     }
 
     this.visitChildren(ctx);
@@ -93,18 +114,28 @@ export default class CVisitorImplemented extends CVisitor {
       this.blockItemList = ctx;
     }
 
+    this.currentBlockItemList = ctx;
+
     const result = this.visitChildren(ctx);
 
     if (
       this.currentProcess.pid != 1 &&
       !this.currentProcess.isSleeping &&
-      ctx.parentCtx.parentCtx.parentCtx.constructor.name ==
-        "IterationStatementContext" &&
-      ctx.parentCtx.parentCtx.parentCtx.notExecuted &&
-      !this.currentProcess.returnedToIteration
+      this.currentProcess.context.iterationsNotExecuted &&
+      this.currentProcess.context.iterationsNotExecuted[0] &&
+      !this.currentProcess.context.iterationsNotExecuted[0].visited
     ) {
-      this.currentProcess.returnedToIteration = true;
-      return this.visitChildren(ctx.parentCtx.parentCtx.parentCtx.parentCtx);
+      this.removeVariables(ctx);
+      this.currentProcess.context.iterationsNotExecuted[0].visited = true;
+      return this.visitChildren(
+        this.currentProcess.context.iterationsNotExecuted[0].ctx.parentCtx
+      );
+    }
+
+    if (
+      ctx.parentCtx.parentCtx.constructor.name != "FunctionDefinitionContext"
+    ) {
+      this.removeVariables(ctx);
     }
 
     return result;
@@ -117,7 +148,11 @@ export default class CVisitorImplemented extends CVisitor {
       this.currentProcess.isSleeping = false;
     }
 
-    return this.visitChildren(ctx);
+    return this.visitChildren(ctx)[0];
+  }
+
+  visitExpressionStatement(ctx) {
+    return this.visitChildren(ctx)[0];
   }
 
   visitDeclaration(ctx) {
@@ -125,14 +160,18 @@ export default class CVisitorImplemented extends CVisitor {
       return this.visitChildren(ctx);
     }
 
-    this.currentProcess.count++;
     const result = this.visitChildren(ctx);
 
     if (ctx.children.length == 2) {
       const name = ctx.children[0].children[1].getText();
       const type = ctx.children[0].children[0].getText();
       if (!this.currentProcess.variables.get(name)) {
-        this.currentProcess.variables.set(name, { type, name, value: null });
+        this.currentProcess.variables.set(name, {
+          type,
+          name,
+          value: null,
+          blockItem: this.currentBlockItemList,
+        });
       } else {
         console.error(
           `A variável '${name}' já foi definida. Erro na função visitDeclaration. Linha ${ctx.start.line}.`
@@ -143,6 +182,7 @@ export default class CVisitorImplemented extends CVisitor {
       for (let variable of result[1]) {
         if (!this.currentProcess.variables.get(variable.name)) {
           variable.type = type;
+          variable.blockItem = this.currentBlockItemList;
           this.currentProcess.variables.set(variable.name, variable);
         } else {
           console.error(
@@ -160,12 +200,10 @@ export default class CVisitorImplemented extends CVisitor {
     }
 
     const result = this.visitChildren(ctx);
-    const resultLen = result.length;
     const newResult = [];
 
     for (let r of result) {
       if (r != undefined) {
-        r.value = result[resultLen - 1].value;
         newResult.push(r);
       }
     }
@@ -190,6 +228,51 @@ export default class CVisitorImplemented extends CVisitor {
     }
 
     return this.visitChildren(ctx)[0];
+  }
+
+  visitForDeclaration(ctx) {
+    if (this.currentProcess.isSleeping) {
+      return this.visitChildren(ctx);
+    }
+
+    const result = this.visitChildren(ctx);
+    const resultVar = result[1][0];
+
+    if (ctx.children.length == 2) {
+      const name = ctx.children[1].children[0].children[0].getText();
+      const type = ctx.children[0].getText();
+      if (!this.currentProcess.variables.get(name)) {
+        const variable = {
+          type,
+          name,
+          value: null,
+          blockItem: this.currentBlockItemList,
+        };
+        if (resultVar) {
+          variable.value = resultVar.value;
+        }
+        this.currentProcess.variables.set(name, variable);
+        return variable;
+      } else {
+        console.error(
+          `A variável '${name}' já foi definida. Erro na função visitDeclaration. Linha ${ctx.start.line}.`
+        );
+      }
+    } else {
+      const type = ctx.children[0].getText();
+      for (let variable of result[1]) {
+        if (!this.currentProcess.variables.get(variable.name)) {
+          variable.type = type;
+          variable.blockItem = this.currentBlockItemList;
+          this.currentProcess.variables.set(variable.name, variable);
+        } else {
+          console.error(
+            `A variável '${variable.name}' já foi definida. Erro na função visitDeclaration. Linha ${ctx.start.line}.`
+          );
+          break;
+        }
+      }
+    }
   }
 
   visitDirectDeclarator(ctx) {
@@ -217,8 +300,6 @@ export default class CVisitorImplemented extends CVisitor {
       return this.visitChildren(ctx);
     }
 
-    this.currentProcess.count++;
-
     if (
       this.currentProcess.pid != 1 &&
       ctx.parentCtx.children.indexOf(ctx) == 6 &&
@@ -232,22 +313,81 @@ export default class CVisitorImplemented extends CVisitor {
 
   visitIterationStatement(ctx) {
     if (this.currentProcess.isSleeping) {
-      ctx.notExecuted = true;
+      if (!this.currentProcess.context.iterationsNotExecuted) {
+        this.currentProcess.context.iterationsNotExecuted = [
+          { ctx, visited: false },
+        ];
+      } else {
+        this.currentProcess.context.iterationsNotExecuted.unshift({
+          ctx,
+          visited: false,
+        });
+      }
       return this.visitChildren(ctx);
     }
     if (ctx.children.length == 1) {
       return this.visitChildren(ctx);
     }
 
-    ctx.notExecuted = false;
-
     if (ctx.children[0].getText() == "while") {
       let conditionState = this.visitChildren(ctx.children[2])[0];
       let result;
       while (conditionState) {
         result = this.visitChildren(ctx.children[4]);
-        conditionState = this.visitChildren(ctx.children[2])[0];
+        try {
+          conditionState = this.visitChildren(ctx.children[2])[0];
+        } catch {
+          return null;
+        }
       }
+      this.removeIteration(ctx);
+      return result;
+    } else if (ctx.children[0].getText() == "for") {
+      let forDecl;
+
+      if (this.currentProcess.pid == 1) {
+        const varName =
+          ctx.children[2].children[0].children.length == 2
+            ? ctx.children[2].children[0].children[1].children[0].children[0].getText()
+            : ctx.children[2].children[0].children[0].getText();
+        forDecl = this.currentProcess.variables.get(varName);
+        if (!forDecl) {
+          forDecl = this.visitForDeclaration(ctx.children[2].children[0]);
+        }
+      } else {
+        // Verifica se é realizada uma declaração de variável no for ou apenas atribuída uma variável
+        // Por exemplo, se foi realizado: for(int i = 0) ou apenas for (i), com i sendo uma variável já instanciada
+        const varName =
+          ctx.children[2].children[0].children.length == 2
+            ? ctx.children[2].children[0].children[1].children[0].children[0].getText()
+            : ctx.children[2].children[0].children[0].getText();
+        forDecl = this.currentProcess.variables.get(varName);
+        if (!forDecl) {
+          forDecl = this.visitForDeclaration(ctx.children[2].children[0]);
+        }
+      }
+
+      if (
+        this.currentProcess.pid != 1 &&
+        this.currentProcess.context.iterationsNotExecuted[0].ctx == ctx
+      ) {
+        this.visitUnaryExpression(ctx.children[2].children[4]);
+      }
+
+      let forExp = this.visitChildren(ctx.children[2].children[2])[0];
+      let result;
+
+      while (forExp) {
+        result = this.visitChildren(ctx.children[4]);
+        this.visitChildren(ctx.children[2].children[4]);
+        try {
+          forExp = this.visitChildren(ctx.children[2].children[2])[0];
+        } catch {
+          return null;
+        }
+      }
+      this.currentProcess.variables.delete(forDecl.name);
+      this.removeIteration(ctx);
       return result;
     }
 
@@ -733,7 +873,8 @@ export default class CVisitorImplemented extends CVisitor {
         this.currentProcess.isActivated = false;
         return null;
       } else if (ctx.getText() === "fork()") {
-        if (this.currentProcess.count < 2) {
+        if (!this.currentProcess.forkEnabled) {
+          this.currentProcess.forkEnabled = true;
           return 0;
         }
 
