@@ -369,6 +369,7 @@ export default class CVisitorImplemented extends CVisitor {
 
       if (
         this.currentProcess.pid != 1 &&
+        this.currentProcess.context.iterationsNotExecuted &&
         this.currentProcess.context.iterationsNotExecuted[0].ctx == ctx
       ) {
         this.visitUnaryExpression(ctx.children[2].children[4]);
