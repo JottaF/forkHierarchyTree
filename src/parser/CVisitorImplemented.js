@@ -7,7 +7,8 @@ export default class CVisitorImplemented extends CVisitor {
     super();
     this.tree = new ForkTree();
     this.pidController = this.tree.pidController;
-    this.count = 1;
+
+    this.countNode = 0;
 
     this.currentProcess = new Process(null, this.tree.root);
     this.currentProcess.forkEnabled = true;
@@ -22,7 +23,7 @@ export default class CVisitorImplemented extends CVisitor {
 
   visitChildren(ctx) {
     if (!this.currentProcess.isActivated) {
-      return [null];
+      return null;
     }
     return super.visitChildren(ctx);
   }
@@ -108,6 +109,10 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitBlockItemList(ctx) {
+    if (!this.currentProcess.isActivated) {
+      return null;
+    }
+
     if (
       ctx.parentCtx.parentCtx.constructor.name == "FunctionDefinitionContext"
     ) {
@@ -120,7 +125,9 @@ export default class CVisitorImplemented extends CVisitor {
 
     if (
       this.currentProcess.pid != 1 &&
+      this.currentProcess.isActivated &&
       !this.currentProcess.isSleeping &&
+      ctx.children.includes(this.currentProcess.blockItem) &&
       this.currentProcess.context.iterationsNotExecuted &&
       this.currentProcess.context.iterationsNotExecuted[0] &&
       !this.currentProcess.context.iterationsNotExecuted[0].visited
@@ -148,7 +155,7 @@ export default class CVisitorImplemented extends CVisitor {
       this.currentProcess.isSleeping = false;
     }
 
-    return this.visitChildren(ctx)[0];
+    return this.visitChildren(ctx);
   }
 
   visitExpressionStatement(ctx) {
@@ -312,6 +319,10 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitIterationStatement(ctx) {
+    if (!this.currentProcess.isActivated) {
+      return null;
+    }
+
     if (this.currentProcess.isSleeping) {
       if (!this.currentProcess.context.iterationsNotExecuted) {
         this.currentProcess.context.iterationsNotExecuted = [
@@ -395,6 +406,10 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitSelectionStatement(ctx) {
+    if (!this.currentProcess.isActivated) {
+      return null;
+    }
+
     if (this.currentProcess.isSleeping) {
       return this.visitChildren(ctx);
     }
@@ -405,6 +420,7 @@ export default class CVisitorImplemented extends CVisitor {
       if (state) {
         ctx.ifCondition = true;
         const result = this.visitChildren(ctx.children[4]);
+        ctx.ifCondition = false;
         return result;
       } else if (ctx.children.length == 7) {
         return this.visitChildren(ctx.children[6]);
@@ -927,10 +943,12 @@ export default class CVisitorImplemented extends CVisitor {
             }.`
           );
         }
+      } else {
+        return element;
       }
     }
 
-    return element;
+    return null;
   }
 
   visitPrimaryExpression(ctx) {
