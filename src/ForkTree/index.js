@@ -51,11 +51,10 @@ export class ForkTree {
       container: "#output-container",
 
       connectors: {
-        type: "straight",
+        type: "curve",
       },
       node: {
         HTMLclass: "nodeExample1",
-        collapsable: true,
       },
       animation: {
         nodeAnimation: "easeOutCubic",
