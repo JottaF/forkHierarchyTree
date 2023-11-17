@@ -44,6 +44,7 @@ export default class CVisitorImplemented extends CVisitor {
     newProcess.pid = node.pid;
     newProcess.variables = this.cloneMap(this.currentProcess.variables);
     newProcess.context = { ...this.currentProcess.context };
+    newProcess.context.iterationsNotExecuted = [];
 
     this.processList.push(newProcess);
     return node.pid;
@@ -122,22 +123,6 @@ export default class CVisitorImplemented extends CVisitor {
     this.currentBlockItemList = ctx;
 
     const result = this.visitChildren(ctx);
-
-    if (
-      this.currentProcess.pid != 1 &&
-      this.currentProcess.isActivated &&
-      !this.currentProcess.isSleeping &&
-      ctx.children.includes(this.currentProcess.blockItem) &&
-      this.currentProcess.context.iterationsNotExecuted &&
-      this.currentProcess.context.iterationsNotExecuted[0] &&
-      !this.currentProcess.context.iterationsNotExecuted[0].visited
-    ) {
-      this.removeVariables(ctx);
-      this.currentProcess.context.iterationsNotExecuted[0].visited = true;
-      return this.visitChildren(
-        this.currentProcess.context.iterationsNotExecuted[0].ctx.parentCtx
-      );
-    }
 
     if (
       ctx.parentCtx.parentCtx.constructor.name != "FunctionDefinitionContext"
@@ -323,19 +308,34 @@ export default class CVisitorImplemented extends CVisitor {
       return null;
     }
 
+    // Verifica se o processo ainda está "dormindo"
     if (this.currentProcess.isSleeping) {
-      if (!this.currentProcess.context.iterationsNotExecuted) {
-        this.currentProcess.context.iterationsNotExecuted = [
-          { ctx, visited: false },
-        ];
-      } else {
-        this.currentProcess.context.iterationsNotExecuted.unshift({
-          ctx,
-          visited: false,
-        });
+      // Adiciona o ctx atual na primeira posição da fila
+      this.currentProcess.context.iterationsNotExecuted.unshift({
+        ctx,
+        visited: false,
+      });
+
+      let result = this.visitChildren(ctx);
+
+      // Esta verificação é responsável por executar um IterationStatement que não foi executado
+      if (
+        this.currentProcess.pid != 1 && // É um processo filho
+        this.currentProcess.isActivated && // O processo ainda está ativo
+        !this.currentProcess.isSleeping && // O processo não está "dormindo"
+        this.currentProcess.context.iterationsNotExecuted.length != 0 && // O número de iterações não executadas é > 0
+        this.currentProcess.context.iterationsNotExecuted[0].ctx == ctx && // A primeira iteração não executada da fila corresponde ao nó atual
+        !this.currentProcess.context.iterationsNotExecuted[0].visited // A primeira iteração da fila ainda não foi executada
+      ) {
+        this.currentProcess.context.iterationsNotExecuted[0].visited = true; // Altera o estado da iteração, para não entrar em loop
+        result = this.visitChildren(ctx.parentCtx); // Executa o nó anterior, para que, assim, todo o processo seja executado
+        this.removeIteration(ctx); // Remo a iteração da fila
       }
-      return this.visitChildren(ctx);
+
+      return result;
     }
+
+    // Significa que não possui uma iteração
     if (ctx.children.length == 1) {
       return this.visitChildren(ctx);
     }
@@ -351,7 +351,6 @@ export default class CVisitorImplemented extends CVisitor {
           return null;
         }
       }
-      this.removeIteration(ctx);
       return result;
     } else if (ctx.children[0].getText() == "for") {
       let forDecl;
@@ -399,7 +398,6 @@ export default class CVisitorImplemented extends CVisitor {
         }
       }
       this.currentProcess.variables.delete(forDecl.name);
-      this.removeIteration(ctx);
       return result;
     }
 
