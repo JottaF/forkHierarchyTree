@@ -16,16 +16,9 @@ require(["vs/editor/editor.main"], function () {
     {
       value: [
         "int main() {",
+        "\tfork();",
         "\tfor (int i = 0; i < 2; i++) {",
-        "\t\tint j = 0;",
-        "\t\tif (j < 2) {",
-        "\t\t\tif (i < 3) {",
-        "\t\t\t\twhile(j<2) {",
-        "\t\t\t\t\tfork();",
-        "\t\t\t\t\tj++;",
-        "\t\t\t\t}",
-        "\t\t\t}",
-        "\t\t}",
+        "\t\tfork();",
         "\t}",
         "}",
       ].join("\n"),
