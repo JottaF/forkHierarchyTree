@@ -238,7 +238,9 @@ export default class CVisitorImplemented extends CVisitor {
           type,
           name,
           value: null,
-          blockItem: this.currentBlockItemList,
+          blockItem: this.currentIterationCtx
+            ? this.currentIterationCtx
+            : this.currentBlockItemList,
         };
         if (resultVar) {
           variable.value = resultVar.value;
@@ -255,7 +257,9 @@ export default class CVisitorImplemented extends CVisitor {
       for (let variable of result[1]) {
         if (!this.currentProcess.variables.get(variable.name)) {
           variable.type = type;
-          variable.blockItem = this.currentBlockItemList;
+          variable.blockItem = this.currentIterationCtx
+            ? this.currentIterationCtx
+            : this.currentBlockItemList;
           this.currentProcess.variables.set(variable.name, variable);
         } else {
           console.error(
@@ -328,8 +332,8 @@ export default class CVisitorImplemented extends CVisitor {
         !this.currentProcess.context.iterationsNotExecuted[0].visited // A primeira iteração da fila ainda não foi executada
       ) {
         this.currentProcess.context.iterationsNotExecuted[0].visited = true; // Altera o estado da iteração, para não entrar em loop
-        result = this.visitChildren(ctx.parentCtx); // Executa o nó anterior, para que, assim, todo o processo seja executado
-        this.removeIteration(ctx); // Remo a iteração da fila
+        result = this.visitIterationStatement(ctx); // Chamada recursiva, para que, assim, todo o processo seja executado
+        this.removeIteration(ctx); // Remove a iteração da fila
       }
 
       return result;
@@ -353,6 +357,7 @@ export default class CVisitorImplemented extends CVisitor {
       }
       return result;
     } else if (ctx.children[0].getText() == "for") {
+      this.currentIterationCtx = ctx;
       let forDecl;
 
       if (this.currentProcess.pid == 1) {
@@ -379,7 +384,7 @@ export default class CVisitorImplemented extends CVisitor {
 
       if (
         this.currentProcess.pid != 1 &&
-        this.currentProcess.context.iterationsNotExecuted &&
+        this.currentProcess.context.iterationsNotExecuted.length != 0 &&
         this.currentProcess.context.iterationsNotExecuted[0].ctx == ctx
       ) {
         this.visitUnaryExpression(ctx.children[2].children[4]);
@@ -398,6 +403,7 @@ export default class CVisitorImplemented extends CVisitor {
         }
       }
       this.currentProcess.variables.delete(forDecl.name);
+      this.currentIterationCtx = null;
       return result;
     }
 
