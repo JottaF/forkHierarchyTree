@@ -900,6 +900,16 @@ export default class CVisitorImplemented extends CVisitor {
         }
 
         return this.createProcess();
+      } else if (element === "printf") {
+        let output = result[2].reduce((acc, value) => {
+          if (value !== undefined) {
+            return acc + " " + value;
+          }
+          return acc;
+        }, "");
+        output = output.trim().replaceAll('"', "");
+
+        console.log(output);
       } else if (ctx.children.length === 2) {
         if (typeof element === typeof Number()) {
           switch (ctx.children[1].getText()) {

@@ -16,10 +16,8 @@ require(["vs/editor/editor.main"], function () {
     {
       value: [
         "int main() {",
-        "\tfork();",
-        "\tfor (int i = 0; i < 2; i++) {",
-        "\t\tfork();",
-        "\t}",
+        "\tint a = 4;",
+        "\tprintf(\"Teste som\", a);",
         "}",
       ].join("\n"),
       language: "c",
