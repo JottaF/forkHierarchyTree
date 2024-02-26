@@ -936,7 +936,7 @@ export default class CVisitorImplemented extends CVisitor {
         }
 
         return this.createProcess();
-      } else if (element === "printf") {
+      } else if (element === "printf" || element === "puts") {
         let argumentsList = result[2].filter((e) => e !== undefined);
         let output = argumentsList[0];
         let args = argumentsList.slice(1);
@@ -967,6 +967,10 @@ export default class CVisitorImplemented extends CVisitor {
         output = output.trim().replaceAll('"', "");
 
         console.log(output);
+      } else if (ctx.getText() === "getpid()") {
+        return this.currentProcess.tree.pid;
+      } else if (ctx.getText() === "getppid()") {
+        return this.currentProcess.tree.ppid;
       } else if (ctx.children.length === 2) {
         if (typeof element === typeof Number()) {
           switch (ctx.children[1].getText()) {
