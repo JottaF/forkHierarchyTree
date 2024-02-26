@@ -169,6 +169,38 @@ export default class CVisitorImplemented extends CVisitor {
           `A variável '${name}' já foi definida. Erro na função visitDeclaration. Linha ${ctx.start.line}.`
         );
       }
+    } else if (ctx.getText().includes("*")) {
+      if (ctx.children[1].children.length == 1) {
+        const name =
+          ctx.children[1].children[0].children[0].children[1].getText();
+        const type = ctx.children[0].children[0].getText();
+        if (!this.currentProcess.variables.get(name)) {
+          this.currentProcess.variables.set(name, {
+            type,
+            name,
+            value: null,
+            blockItem: this.currentBlockItemList,
+          });
+        } else {
+          console.error(
+            `A variável '${name}' já foi definida. Erro na função visitDeclaration. Linha ${ctx.start.line}.`
+          );
+        }
+      } else {
+        const type = ctx.children[0].getText();
+        for (let variable of result[1]) {
+          if (!this.currentProcess.variables.get(variable.name)) {
+            variable.type = type;
+            variable.blockItem = this.currentBlockItemList;
+            this.currentProcess.variables.set(variable.name, variable);
+          } else {
+            console.error(
+              `A variável '${variable.name}' já foi definida. Erro na função visitDeclaration. Linha ${ctx.start.line}.`
+            );
+            break;
+          }
+        }
+      }
     } else {
       const type = ctx.children[0].getText();
       for (let variable of result[1]) {
@@ -219,7 +251,11 @@ export default class CVisitorImplemented extends CVisitor {
       return this.visitChildren(ctx);
     }
 
-    return this.visitChildren(ctx)[0];
+    const result = this.visitChildren(ctx);
+    if (ctx.getText().includes("*")) {
+      return result[1];
+    }
+    return result[0];
   }
 
   visitForDeclaration(ctx) {
@@ -901,12 +937,33 @@ export default class CVisitorImplemented extends CVisitor {
 
         return this.createProcess();
       } else if (element === "printf") {
-        let output = result[2].reduce((acc, value) => {
-          if (value !== undefined) {
-            return acc + " " + value;
-          }
-          return acc;
-        }, "");
+        let argumentsList = result[2].filter((e) => e !== undefined);
+        let output = argumentsList[0];
+        let args = argumentsList.slice(1);
+
+        if (output.includes("%")) {
+          let pos = 0;
+          output = output.replace(/%[sd]/g, (match) => {
+            const arg = args[pos++];
+
+            if (match === "%s" && typeof arg !== "string") {
+              throw new Error(
+                `Tipo de argumento incorreto para %s: ${typeof arg}`
+              );
+            } else if (match === "%d" && typeof arg !== "number") {
+              throw new Error(
+                `Tipo de argumento incorreto para %d: ${typeof arg}`
+              );
+            }
+
+            if (match === "%s") {
+              return String(arg);
+            } else if (match === "%d") {
+              return Number(arg);
+            }
+            return match;
+          });
+        }
         output = output.trim().replaceAll('"', "");
 
         console.log(output);

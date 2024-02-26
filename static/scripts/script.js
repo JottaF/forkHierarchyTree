@@ -16,8 +16,7 @@ require(["vs/editor/editor.main"], function () {
     {
       value: [
         "int main() {",
-        "\tint a = 4;",
-        "\tprintf(\"Teste som\", a);",
+        "\tchar *a, *b = \"test\";",
         "}",
       ].join("\n"),
       language: "c",
