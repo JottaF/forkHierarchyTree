@@ -72,13 +72,13 @@ export default class CVisitorImplemented extends CVisitor {
   visitCompilationUnit(ctx) {
     this.visitChildren(ctx);
 
-    console.warn(
-      "this.currentProcess.variables:",
-      this.currentProcess.variables
-    );
-    console.warn("this.selectionConditions:", this.selectionConditions);
-    console.warn("this:", this);
-    console.warn("this.processList:", this.processList);
+    // console.warn(
+    //   "this.currentProcess.variables:",
+    //   this.currentProcess.variables
+    // );
+    // console.warn("this.selectionConditions:", this.selectionConditions);
+    // console.warn("this:", this);
+    // console.warn("this.processList:", this.processList);
     this.currentProcess.isActivated = false;
   }
 
@@ -947,12 +947,26 @@ export default class CVisitorImplemented extends CVisitor {
             const arg = args[pos++];
 
             if (match === "%s" && typeof arg !== "string") {
+              console.error(
+                `Tipo de argumento incorreto para %s: ${typeof arg}. Linha ${
+                  ctx.start.line
+                }`
+              );
               throw new Error(
-                `Tipo de argumento incorreto para %s: ${typeof arg}`
+                `Tipo de argumento incorreto para %s: ${typeof arg}. Linha ${
+                  ctx.start.line
+                }`
               );
             } else if (match === "%d" && typeof arg !== "number") {
+              console.error(
+                `Tipo de argumento incorreto para %d: ${typeof arg}. Linha ${
+                  ctx.start.line
+                }`
+              );
               throw new Error(
-                `Tipo de argumento incorreto para %d: ${typeof arg}`
+                `Tipo de argumento incorreto para %d: ${typeof arg}. Linha ${
+                  ctx.start.line
+                }`
               );
             }
 
@@ -964,7 +978,7 @@ export default class CVisitorImplemented extends CVisitor {
             return match;
           });
         }
-        output = output.trim().replaceAll('"', "");
+        output = output.trim().replaceAll('"', "").replaceAll("\n", "\n");
 
         console.log(output);
       } else if (ctx.getText() === "getpid()") {

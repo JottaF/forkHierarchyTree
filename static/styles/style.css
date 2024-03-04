@@ -49,11 +49,40 @@ header {
   #output-container,
   #input-container {
     flex: 1;
-    width: 100vw;
     max-width: none !important;
   }
 
   #input-container {
     max-height: 12rem;
   }
+}
+
+#console-container {
+  width: 20vw;
+  max-width: 20vw;
+  overflow: scroll;
+  padding: 1rem;
+  /* display: none; */
+  font-family: monospace;
+  background-color: #191622;
+  white-space: pre-wrap;
+  resize: vertical;
+}
+
+#console-container::-webkit-resizer {
+  cursor: ew-resize; /* Define o cursor para redimensionamento horizontal */
+  position: absolute; /* Posiciona o controle de redimensionamento absolutamente */
+  top: 0;
+  left: -6px; /* Posiciona o controle 6 pixels à esquerda do elemento */
+  height: 100%;/* Cursor personalizado */
+}
+
+.log {
+  color: #e9e9e9;
+}
+.error {
+  color: #ff577a;
+}
+.warn {
+  color: orange;
 }
