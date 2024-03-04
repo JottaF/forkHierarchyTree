@@ -36,3 +36,7 @@ function gerarArvore() {
 function apagarInput() {
   window.editor.setValue("");
 }
+
+function limparConsole() {
+  document.querySelector('#console-container').innerHTML = ''
+}
