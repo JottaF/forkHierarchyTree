@@ -72,13 +72,13 @@ export default class CVisitorImplemented extends CVisitor {
   visitCompilationUnit(ctx) {
     this.visitChildren(ctx);
 
-    // console.warn(
-    //   "this.currentProcess.variables:",
-    //   this.currentProcess.variables
-    // );
-    // console.warn("this.selectionConditions:", this.selectionConditions);
-    // console.warn("this:", this);
-    // console.warn("this.processList:", this.processList);
+    console.warn(
+      "this.currentProcess.variables:",
+      this.currentProcess.variables
+    );
+    console.warn("this.selectionConditions:", this.selectionConditions);
+    console.warn("this:", this);
+    console.warn("this.processList:", this.processList);
     this.currentProcess.isActivated = false;
   }
 
