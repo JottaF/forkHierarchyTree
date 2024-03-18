@@ -23,6 +23,7 @@ require(["vs/editor/editor.main"], function () {
 });
 
 function gerarArvore() {
+  limparConsole()
   const entrada = window.editor.getValue();
 
   if (entrada == "") {
