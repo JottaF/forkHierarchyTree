@@ -36,3 +36,7 @@
     consoleOutput.appendChild(p);
   }
 })();
+
+window.onload = function() {
+  document.querySelector('#console-container').innerHTML = ''
+};

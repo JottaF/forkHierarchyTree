@@ -1,7 +1,6 @@
 import { ForkTree } from "../ForkTree";
 import CVisitor from "./CVisitor";
 import { Process } from "./Process";
-import Worker from './CVisitor.worker'
 import { ImpressionNode } from "./ImpressionTree";
 
 export default class CVisitorImplemented extends CVisitor {
@@ -79,7 +78,11 @@ export default class CVisitorImplemented extends CVisitor {
 
   promiseNode(data) {
     return new Promise((resolve, reject) => {
-      resolve(this.printNode(data))
+      // O que precisa fazer agora é garantir os nós pai executem antes dos filhos
+      const time = Math.random() * 500
+      setTimeout(() => {
+        resolve(this.printNode(data))
+      }, time)
     })
   }
 
@@ -98,15 +101,6 @@ export default class CVisitorImplemented extends CVisitor {
 
   visitCompilationUnit(ctx) {
     this.visitChildren(ctx);
-
-    console.warn(
-      "this.currentProcess.variables:",
-      this.currentProcess.variables
-    );
-    console.warn("this.selectionConditions:", this.selectionConditions);
-    console.warn("this:", this);
-    console.warn("this.processList:", this.processList);
-    console.warn("impression node:", this.processList[0].impressionNode);
     this.currentProcess.isActivated = false;
   }
 
@@ -1009,9 +1003,13 @@ export default class CVisitorImplemented extends CVisitor {
             return match;
           });
         }
-        output = output.trim().replaceAll('"', "").replaceAll("\n", "\n");
+        output = output.trim().replaceAll('"', "").replaceAll("\n", "");
 
-        this.currentProcess.impressionNode.addChild(new ImpressionNode(output));
+        if (this.currentProcess.pid == 1 && this.processList.length == 1) {
+          console.log(output);
+        } else {
+          this.currentProcess.impressionNode.addChild(new ImpressionNode(output));
+        }
 
       } else if (ctx.getText() === "getpid()") {
         return this.currentProcess.tree.pid;
