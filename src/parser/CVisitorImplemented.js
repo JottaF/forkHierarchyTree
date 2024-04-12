@@ -2,6 +2,7 @@ import { ForkTree } from "../ForkTree";
 import CVisitor from "./CVisitor";
 import { Process } from "./Process";
 import Worker from './CVisitor.worker'
+import { ImpressionNode } from "./ImpressionTree";
 
 export default class CVisitorImplemented extends CVisitor {
   constructor() {
@@ -15,6 +16,7 @@ export default class CVisitorImplemented extends CVisitor {
     this.currentProcess.forkEnabled = true;
     this.currentProcess.pid = 1;
     this.currentProcess.isSleeping = false;
+    this.currentProcess.impressionNode = new ImpressionNode()
 
     this.processList = [this.currentProcess];
     this.currentBlockItem = null;
@@ -48,10 +50,9 @@ export default class CVisitorImplemented extends CVisitor {
     newProcess.variables = this.cloneMap(this.currentProcess.variables);
     newProcess.context = { ...this.currentProcess.context };
     newProcess.context.iterationsNotExecuted = [];
+    newProcess.impressionNode = new ImpressionNode()
 
-    const worker = new Worker()
-
-    worker.postMessage('full')
+    this.currentProcess.impressionNode.addChild(newProcess.impressionNode)
 
     this.processList.push(newProcess);
     return node.pid;
@@ -76,6 +77,25 @@ export default class CVisitorImplemented extends CVisitor {
     }
   }
 
+  promiseNode(data) {
+    return new Promise((resolve, reject) => {
+      resolve(this.printNode(data))
+    })
+  }
+
+  printNode(node) {
+    if (node.content) {
+      console.log(node.content);
+      return Promise.resolve(); // Retorna uma Promise resolvida
+    } else {
+      const promises = Array.from(node.children).map(child => {
+        return this.promiseNode(child); // Retorna a Promise gerada por promiseNode
+      });
+      // Aguarda a resolução de todas as Promises
+      return Promise.all(promises);
+    }
+  }
+
   visitCompilationUnit(ctx) {
     this.visitChildren(ctx);
 
@@ -86,6 +106,7 @@ export default class CVisitorImplemented extends CVisitor {
     console.warn("this.selectionConditions:", this.selectionConditions);
     console.warn("this:", this);
     console.warn("this.processList:", this.processList);
+    console.warn("impression node:", this.processList[0].impressionNode);
     this.currentProcess.isActivated = false;
   }
 
@@ -114,6 +135,9 @@ export default class CVisitorImplemented extends CVisitor {
       this.currentProcess.isActivated = false;
       process = this.processList[processIndex];
     }
+
+    // Imprime no conssole
+    this.printNode(this.processList[0].impressionNode)
   }
 
   visitBlockItemList(ctx) {
@@ -987,7 +1011,8 @@ export default class CVisitorImplemented extends CVisitor {
         }
         output = output.trim().replaceAll('"', "").replaceAll("\n", "\n");
 
-        console.log(output);
+        this.currentProcess.impressionNode.addChild(new ImpressionNode(output));
+
       } else if (ctx.getText() === "getpid()") {
         return this.currentProcess.tree.pid;
       } else if (ctx.getText() === "getppid()") {
