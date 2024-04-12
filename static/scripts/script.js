@@ -14,7 +14,7 @@ require(["vs/editor/editor.main"], function () {
   window.editor = monaco.editor.create(
     document.getElementById("c-code-editor"),
     {
-      value: ["int main() {", '\tprintf("pid: %d", getpid());', "}"].join("\n"),
+      value: ["int main() {",'\tfork();', '\tprintf("pid: %d", getpid());', "}"].join("\n"),
       language: "c",
       theme: "vs-dark",
       automaticLayout: true,

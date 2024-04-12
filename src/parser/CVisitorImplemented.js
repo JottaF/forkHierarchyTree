@@ -1,6 +1,7 @@
 import { ForkTree } from "../ForkTree";
 import CVisitor from "./CVisitor";
 import { Process } from "./Process";
+import Worker from './CVisitor.worker'
 
 export default class CVisitorImplemented extends CVisitor {
   constructor() {
@@ -47,6 +48,10 @@ export default class CVisitorImplemented extends CVisitor {
     newProcess.variables = this.cloneMap(this.currentProcess.variables);
     newProcess.context = { ...this.currentProcess.context };
     newProcess.context.iterationsNotExecuted = [];
+
+    const worker = new Worker()
+
+    worker.postMessage('full')
 
     this.processList.push(newProcess);
     return node.pid;
