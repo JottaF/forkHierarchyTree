@@ -15,7 +15,7 @@ export default class CVisitorImplemented extends CVisitor {
     this.currentProcess.forkEnabled = true;
     this.currentProcess.pid = 1;
     this.currentProcess.isSleeping = false;
-    this.currentProcess.impressionNode = new ImpressionNode()
+    this.currentProcess.impressionNode = new ImpressionNode();
 
     this.processList = [this.currentProcess];
     this.currentBlockItem = null;
@@ -25,7 +25,7 @@ export default class CVisitorImplemented extends CVisitor {
 
   visitChildren(ctx) {
     this.countNodes++;
-    
+
     if (!this.currentProcess.isActivated) {
       return null;
     }
@@ -49,9 +49,9 @@ export default class CVisitorImplemented extends CVisitor {
     newProcess.variables = this.cloneMap(this.currentProcess.variables);
     newProcess.context = { ...this.currentProcess.context };
     newProcess.context.iterationsNotExecuted = [];
-    newProcess.impressionNode = new ImpressionNode()
+    newProcess.impressionNode = new ImpressionNode();
 
-    this.currentProcess.impressionNode.addChild(newProcess.impressionNode)
+    this.currentProcess.impressionNode.addChild(newProcess.impressionNode);
 
     this.processList.push(newProcess);
     return node.pid;
@@ -76,23 +76,33 @@ export default class CVisitorImplemented extends CVisitor {
     }
   }
 
-  promiseNode(data) {
+  promiseNode(data, range) {
     return new Promise((resolve, reject) => {
       // O que precisa fazer agora é garantir os nós pai executem antes dos filhos
-      const time = Math.random() * 500
+      const max = 100 * (range + 1);
+      const min = 100 * range;
+      const time = Math.random() * (max - min) + min;
       setTimeout(() => {
-        resolve(this.printNode(data))
-      }, time)
-    })
+        resolve(this.printNode(data, range + 1));
+      }, time);
+    });
   }
 
-  printNode(node) {
+  printNode(node, range = 0) {
     if (node.content) {
       console.log(node.content);
       return Promise.resolve(); // Retorna uma Promise resolvida
     } else {
-      const promises = Array.from(node.children).map(child => {
-        return this.promiseNode(child); // Retorna a Promise gerada por promiseNode
+      let range2 = range;
+      const promises = Array.from(node.children).map((child) => {
+        range2++;
+        if (child.sleep) {
+          return new Promise((resolve) => {
+            resolve(setTimeout(() => {}, node.sleep * 1000));
+          });
+        } else {
+          return this.promiseNode(child, range2); // Retorna a Promise gerada por promiseNode
+        }
       });
       // Aguarda a resolução de todas as Promises
       return Promise.all(promises);
@@ -131,7 +141,7 @@ export default class CVisitorImplemented extends CVisitor {
     }
 
     // Imprime no conssole
-    this.printNode(this.processList[0].impressionNode)
+    this.printNode(this.processList[0].impressionNode);
   }
 
   visitBlockItemList(ctx) {
@@ -1003,18 +1013,23 @@ export default class CVisitorImplemented extends CVisitor {
             return match;
           });
         }
-        output = output.trim().replaceAll('"', "").replaceAll("\n", "");
+        output = output.trim().replaceAll('"', "").replaceAll("\\n", "");
 
         if (this.currentProcess.pid == 1 && this.processList.length == 1) {
           console.log(output);
         } else {
-          this.currentProcess.impressionNode.addChild(new ImpressionNode(output));
+          this.currentProcess.impressionNode.addChild(
+            new ImpressionNode(output)
+          );
         }
-
       } else if (ctx.getText() === "getpid()") {
         return this.currentProcess.tree.pid;
       } else if (ctx.getText() === "getppid()") {
         return this.currentProcess.tree.ppid;
+      } else if (element === "sleep") {
+        this.currentProcess.impressionNode.addChild(
+          new ImpressionNode(null, parseInt(result[2]))
+        );
       } else if (ctx.children.length === 2) {
         if (typeof element === typeof Number()) {
           switch (ctx.children[1].getText()) {
