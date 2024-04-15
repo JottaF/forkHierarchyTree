@@ -15,5 +15,4 @@ export let parse = (input) => {
   visitor.visit(tree);
 
   return visitor.tree;
-  return visitor.tree;
 };

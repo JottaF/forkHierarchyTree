@@ -14,7 +14,16 @@ require(["vs/editor/editor.main"], function () {
   window.editor = monaco.editor.create(
     document.getElementById("c-code-editor"),
     {
-      value: ["int main() {", '\tprintf("pid: %d", getpid());', "}"].join("\n"),
+      value: [
+        "int main() {",
+        '\tprintf("1 - pid: %d", getpid());',
+        "\tint f1 = fork();",
+        "	if (f1 == 0){",
+        '\t\tprintf("2 - pid: %d", getpid());',
+        "\t}",
+        '\tprintf("3 - pid: %d", getpid());',
+        "}",
+      ].join("\n"),
       language: "c",
       theme: "vs-dark",
       automaticLayout: true,
@@ -23,6 +32,7 @@ require(["vs/editor/editor.main"], function () {
 });
 
 function gerarArvore() {
+  limparConsole();
   const entrada = window.editor.getValue();
 
   if (entrada == "") {
@@ -35,4 +45,10 @@ function gerarArvore() {
 
 function apagarInput() {
   window.editor.setValue("");
+  document.querySelector("#console-container").innerHTML = "";
+  document.querySelector("#output-container").innerHTML = "";
+}
+
+function limparConsole() {
+  document.querySelector("#console-container").innerHTML = "";
 }

@@ -1,6 +1,7 @@
 import { ForkTree } from "../ForkTree";
 import CVisitor from "./CVisitor";
 import { Process } from "./Process";
+import { ImpressionNode } from "./ImpressionTree";
 
 export default class CVisitorImplemented extends CVisitor {
   constructor() {
@@ -8,12 +9,13 @@ export default class CVisitorImplemented extends CVisitor {
     this.tree = new ForkTree();
     this.pidController = this.tree.pidController;
 
-    this.countNode = 0;
+    this.countNodes = 0;
 
     this.currentProcess = new Process(null, this.tree.root);
     this.currentProcess.forkEnabled = true;
     this.currentProcess.pid = 1;
     this.currentProcess.isSleeping = false;
+    this.currentProcess.impressionNode = new ImpressionNode();
 
     this.processList = [this.currentProcess];
     this.currentBlockItem = null;
@@ -22,6 +24,8 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitChildren(ctx) {
+    this.countNodes++;
+
     if (!this.currentProcess.isActivated) {
       return null;
     }
@@ -45,6 +49,9 @@ export default class CVisitorImplemented extends CVisitor {
     newProcess.variables = this.cloneMap(this.currentProcess.variables);
     newProcess.context = { ...this.currentProcess.context };
     newProcess.context.iterationsNotExecuted = [];
+    newProcess.impressionNode = new ImpressionNode();
+
+    this.currentProcess.impressionNode.addChild(newProcess.impressionNode);
 
     this.processList.push(newProcess);
     return node.pid;
@@ -69,20 +76,42 @@ export default class CVisitorImplemented extends CVisitor {
     }
   }
 
+  promiseNode(data, range) {
+    return new Promise((resolve, reject) => {
+      // O que precisa fazer agora é garantir os nós pai executem antes dos filhos
+      const max = 100 * (range + 1);
+      const min = 100 * range;
+      const time = Math.random() * (max - min) + min;
+      setTimeout(() => {
+        resolve(this.printNode(data, range + 1));
+      }, time);
+    });
+  }
+
+  printNode(node, range = 0) {
+    if (node.content) {
+      console.log(node.content);
+      return Promise.resolve(); // Retorna uma Promise resolvida
+    } else {
+      let range2 = range;
+      const promises = Array.from(node.children).map((child) => {
+        range2++;
+        if (child.sleep) {
+          range2 += child.sleep * 10;
+        }
+        return this.promiseNode(child, range2);
+      });
+      // Aguarda a resolução de todas as Promises
+      return Promise.all(promises);
+    }
+  }
+
   visitCompilationUnit(ctx) {
     this.visitChildren(ctx);
-
-    // console.warn(
-    //   "this.currentProcess.variables:",
-    //   this.currentProcess.variables
-    // );
-    // console.warn("this.selectionConditions:", this.selectionConditions);
-    // console.warn("this:", this);
-    // console.warn("this.processList:", this.processList);
     this.currentProcess.isActivated = false;
   }
 
-  visitCompoundStatement(ctx) {
+  async visitCompoundStatement(ctx) {
     if (
       (this.currentProcess.pid != 1 &&
         ctx.parentCtx.constructor.name == "StatementContext") ||
@@ -107,6 +136,12 @@ export default class CVisitorImplemented extends CVisitor {
       this.currentProcess.isActivated = false;
       process = this.processList[processIndex];
     }
+
+    document.getElementById("gerarArvore").setAttribute("disabled", true);
+
+    // Imprime no conssole
+    await this.printNode(this.processList[0].impressionNode);
+    document.getElementById("gerarArvore").removeAttribute("disabled");
   }
 
   visitBlockItemList(ctx) {
@@ -978,13 +1013,23 @@ export default class CVisitorImplemented extends CVisitor {
             return match;
           });
         }
-        output = output.trim().replaceAll('"', "").replaceAll("\n", "\n");
+        output = output.trim().replaceAll('"', "").replaceAll("\\n", "");
 
-        console.log(output);
+        if (this.currentProcess.pid == 1 && this.processList.length == 1) {
+          console.log(output);
+        } else {
+          this.currentProcess.impressionNode.addChild(
+            new ImpressionNode(output)
+          );
+        }
       } else if (ctx.getText() === "getpid()") {
         return this.currentProcess.tree.pid;
       } else if (ctx.getText() === "getppid()") {
         return this.currentProcess.tree.ppid;
+      } else if (element === "sleep") {
+        this.currentProcess.impressionNode.addChild(
+          new ImpressionNode(null, parseInt(result[2]))
+        );
       } else if (ctx.children.length === 2) {
         if (typeof element === typeof Number()) {
           switch (ctx.children[1].getText()) {
