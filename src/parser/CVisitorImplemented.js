@@ -97,12 +97,9 @@ export default class CVisitorImplemented extends CVisitor {
       const promises = Array.from(node.children).map((child) => {
         range2++;
         if (child.sleep) {
-          return new Promise((resolve) => {
-            resolve(setTimeout(() => {}, node.sleep * 1000));
-          });
-        } else {
-          return this.promiseNode(child, range2); // Retorna a Promise gerada por promiseNode
+          range2 += child.sleep * 10;
         }
+        return this.promiseNode(child, range2);
       });
       // Aguarda a resolução de todas as Promises
       return Promise.all(promises);
@@ -114,7 +111,7 @@ export default class CVisitorImplemented extends CVisitor {
     this.currentProcess.isActivated = false;
   }
 
-  visitCompoundStatement(ctx) {
+  async visitCompoundStatement(ctx) {
     if (
       (this.currentProcess.pid != 1 &&
         ctx.parentCtx.constructor.name == "StatementContext") ||
@@ -140,8 +137,11 @@ export default class CVisitorImplemented extends CVisitor {
       process = this.processList[processIndex];
     }
 
+    document.getElementById("gerarArvore").setAttribute("disabled", true);
+
     // Imprime no conssole
-    this.printNode(this.processList[0].impressionNode);
+    await this.printNode(this.processList[0].impressionNode);
+    document.getElementById("gerarArvore").removeAttribute("disabled");
   }
 
   visitBlockItemList(ctx) {
