@@ -5,22 +5,26 @@
   overflow: hidden;
   padding: 0 !important;
 }
-.Treant > .node,
-.Treant > .pseudo {
+
+.Treant>.node,
+.Treant>.pseudo {
   position: absolute;
   display: block;
   visibility: hidden;
 }
+
 .Treant.Treant-loaded .node,
 .Treant.Treant-loaded .pseudo {
   visibility: visible;
 }
-.Treant > .pseudo {
+
+.Treant>.pseudo {
   width: 0;
   height: 0;
   border: none;
   padding: 0;
 }
+
 .Treant .collapse-switch {
   width: 3px;
   height: 3px;
@@ -31,10 +35,12 @@
   right: 1px;
   cursor: pointer;
 }
+
 .Treant .collapsed .collapse-switch {
   background-color: #868dee;
 }
-.Treant > .node img {
+
+.Treant>.node img {
   border: none;
   float: left;
 }
@@ -66,14 +72,17 @@ td {
   margin: 0;
   padding: 0;
 }
+
 table {
   border-collapse: collapse;
   border-spacing: 0;
 }
+
 fieldset,
 img {
   border: 0;
 }
+
 address,
 caption,
 cite,
@@ -86,10 +95,12 @@ var {
   font-style: normal;
   font-weight: normal;
 }
+
 caption,
 th {
   text-align: left;
 }
+
 h1,
 h2,
 h3,
@@ -99,10 +110,12 @@ h6 {
   font-size: 100%;
   font-weight: normal;
 }
+
 q:before,
 q:after {
   content: "";
 }
+
 abbr,
 acronym {
   border: 0;
@@ -111,25 +124,26 @@ acronym {
 body {
   background: #fff;
 }
+
 /* optional Container STYLES */
 .chart {
   height: 400px;
   margin: 5px;
   width: 400px;
 }
-.Treant > .node {
-}
-.Treant > p {
+
+.Treant>p {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue",
     Helvetica, Arial, "Lucida Grande", sans-serif;
   font-weight: bold;
   font-size: 12px;
 }
+
 .node-name {
   font-weight: bold;
 }
 
-.nodeExample1 {
+.nodeProcess {
   padding: 5px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -141,7 +155,7 @@ body {
   font-size: 12px;
 }
 
-.nodeExample1 img {
+.nodeProcess img {
   margin-right: 10px;
 }
 
@@ -154,4 +168,104 @@ a.collapse-switch {
 
 .Treant .collapsed .collapse-switch {
   background-color: #eeb68659;
+}
+
+.node-color-0 {
+  background-color: hsl(0, 100%, 75%);
+}
+
+.node-color-1 {
+  background-color: hsl(15, 100%, 75%);
+}
+
+.node-color-2 {
+  background-color: hsl(30, 100%, 75%);
+}
+
+.node-color-3 {
+  background-color: hsl(45, 100%, 75%);
+}
+
+.node-color-4 {
+  background-color: hsl(60, 100%, 75%);
+}
+
+.node-color-5 {
+  background-color: hsl(75, 100%, 75%);
+}
+
+.node-color-6 {
+  background-color: hsl(90, 100%, 75%);
+}
+
+.node-color-7 {
+  background-color: hsl(105, 100%, 75%);
+}
+
+.node-color-8 {
+  background-color: hsl(120, 100%, 75%);
+}
+
+.node-color-9 {
+  background-color: hsl(135, 100%, 75%);
+}
+
+.node-color-10 {
+  background-color: hsl(150, 100%, 75%);
+}
+
+.node-color-11 {
+  background-color: hsl(165, 100%, 75%);
+}
+
+.node-color-12 {
+  background-color: hsl(180, 100%, 75%);
+}
+
+.node-color-13 {
+  background-color: hsl(195, 100%, 75%);
+}
+
+.node-color-14 {
+  background-color: hsl(210, 100%, 75%);
+}
+
+.node-color-15 {
+  background-color: hsl(225, 100%, 75%);
+}
+
+.node-color-16 {
+  background-color: hsl(240, 100%, 75%);
+}
+
+.node-color-17 {
+  background-color: hsl(255, 100%, 75%);
+}
+
+.node-color-18 {
+  background-color: hsl(270, 100%, 75%);
+}
+
+.node-color-19 {
+  background-color: hsl(285, 100%, 75%);
+}
+
+.node-color-20 {
+  background-color: hsl(300, 100%, 75%);
+}
+
+.node-color-21 {
+  background-color: hsl(315, 100%, 75%);
+}
+
+.node-color-22 {
+  background-color: hsl(330, 100%, 75%);
+}
+
+.node-color-23 {
+  background-color: hsl(345, 100%, 75%);
+}
+
+.node-color-24 {
+  background-color: hsl(360, 100%, 75%);
 }
