@@ -21,6 +21,8 @@ export default class CVisitorImplemented extends CVisitor {
     this.currentBlockItem = null;
     this.blockItemList = null;
     this.currentBlockItemList = null;
+
+    this.colorsUsed = [];
   }
 
   visitChildren(ctx) {
@@ -43,6 +45,7 @@ export default class CVisitorImplemented extends CVisitor {
 
   createProcess() {
     let node = this.currentProcess.tree.addChild(this.pidController);
+    let color = this.newColor();
 
     let newProcess = new Process(this.currentBlockItem, node);
     newProcess.pid = node.pid;
@@ -50,6 +53,8 @@ export default class CVisitorImplemented extends CVisitor {
     newProcess.context = { ...this.currentProcess.context };
     newProcess.context.iterationsNotExecuted = [];
     newProcess.impressionNode = new ImpressionNode();
+    node.color = color;
+    newProcess.impressionNode.color = color;
 
     this.currentProcess.impressionNode.addChild(newProcess.impressionNode);
 
@@ -83,14 +88,18 @@ export default class CVisitorImplemented extends CVisitor {
       const min = 100 * range;
       const time = Math.random() * (max - min) + min;
       setTimeout(() => {
-        resolve(this.printNode(data, range + 1));
+        resolve(this.printNode(data, range));
       }, time);
     });
   }
 
   printNode(node, range = 0) {
     if (node.content) {
-      console.log(node.content);
+      if (node.color) {
+        this.printMessage(node.content, node.color);
+      } else {
+        console.log(node.content);
+      }
       return Promise.resolve(); // Retorna uma Promise resolvida
     } else {
       let range2 = range;
@@ -104,6 +113,31 @@ export default class CVisitorImplemented extends CVisitor {
       // Aguarda a resolução de todas as Promises
       return Promise.all(promises);
     }
+  }
+
+  printMessage(message, color) {
+    const p = document.createElement("p");
+    p.textContent = message;
+    p.classList.add("log", `output-color-${color}`);
+    document.getElementById("console-container").appendChild(p);
+  }
+
+  newColor() {
+    if (this.colorsUsed.length >= 24) {
+      this.colorsUsed = [];
+      this.newColor();
+    }
+
+    let color = null;
+    while (!color) {
+      let h = Math.floor(Math.random() * 25 - 1) + 1;
+      if (!this.colorsUsed.includes(h)) {
+        color = h;
+        this.colorsUsed.push(h);
+      }
+    }
+
+    return color;
   }
 
   visitCompilationUnit(ctx) {
@@ -1018,9 +1052,9 @@ export default class CVisitorImplemented extends CVisitor {
         if (this.currentProcess.pid == 1 && this.processList.length == 1) {
           console.log(output);
         } else {
-          this.currentProcess.impressionNode.addChild(
-            new ImpressionNode(output)
-          );
+          const impressionNode = new ImpressionNode(output);
+          impressionNode.color = this.currentProcess.impressionNode.color;
+          this.currentProcess.impressionNode.addChild(impressionNode);
         }
       } else if (ctx.getText() === "getpid()") {
         return this.currentProcess.tree.pid;

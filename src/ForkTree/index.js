@@ -15,6 +15,7 @@ class Node {
     this.pid = pidController.getPid();
     this.ppid = ppid;
     this.children = [];
+    this.color = null;
   }
 
   addChild(pidController) {
@@ -54,7 +55,7 @@ export class ForkTree {
         type: "curve",
       },
       node: {
-        HTMLclass: "nodeExample1",
+        HTMLclass: "nodeProcess",
       },
       animation: {
         nodeAnimation: "easeOutCubic",
@@ -88,6 +89,7 @@ export class ForkTree {
       },
       parent: parent,
       stackChildren: true,
+      HTMLclass: `node-color-${node.color}`,
     };
 
     bundle.push(bundleNode);

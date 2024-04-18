@@ -3,6 +3,7 @@ export class ImpressionNode {
         this.content = content
         this.children = []
         this.sleep = sleep
+        this.color = null
     }
 
     addChild(node) {

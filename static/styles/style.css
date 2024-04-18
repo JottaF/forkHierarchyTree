@@ -66,26 +66,158 @@ header {
   font-family: monospace;
   background-color: #191622;
   white-space: pre-wrap;
-  resize: vertical;
 }
 
-#console-container::-webkit-resizer {
-  cursor: ew-resize; /* Define o cursor para redimensionamento horizontal */
-  position: absolute; /* Posiciona o controle de redimensionamento absolutamente */
-  top: 0;
-  left: -6px; /* Posiciona o controle 6 pixels à esquerda do elemento */
-  height: 100%;/* Cursor personalizado */
-}
 
 .log {
   color: #e9e9e9;
   margin-bottom: 0;
 }
+
 .error {
   color: #ff577a;
   margin-bottom: 0;
 }
+
 .warn {
   color: orange;
   margin-bottom: 0;
+}
+
+.output-color-0 {
+  color: hsl(0, 100%, 75%);
+}
+
+.output-color-1 {
+  color: hsl(15, 100%, 75%);
+}
+
+.output-color-2 {
+  color: hsl(30, 100%, 75%);
+}
+
+.output-color-3 {
+  color: hsl(45, 100%, 75%);
+}
+
+.output-color-4 {
+  color: hsl(60, 100%, 75%);
+}
+
+.output-color-5 {
+  color: hsl(75, 100%, 75%);
+}
+
+.output-color-6 {
+  color: hsl(90, 100%, 75%);
+}
+
+.output-color-7 {
+  color: hsl(105, 100%, 75%);
+}
+
+.output-color-8 {
+  color: hsl(120, 100%, 75%);
+}
+
+.output-color-9 {
+  color: hsl(135, 100%, 75%);
+}
+
+.output-color-10 {
+  color: hsl(150, 100%, 75%);
+}
+
+.output-color-11 {
+  color: hsl(165, 100%, 75%);
+}
+
+.output-color-12 {
+  color: hsl(180, 100%, 75%);
+}
+
+.output-color-13 {
+  color: hsl(195, 100%, 75%);
+}
+
+.output-color-14 {
+  color: hsl(210, 100%, 75%);
+}
+
+.output-color-15 {
+  color: hsl(225, 100%, 75%);
+}
+
+.output-color-16 {
+  color: hsl(240, 100%, 75%);
+}
+
+.output-color-17 {
+  color: hsl(255, 100%, 75%);
+}
+
+.output-color-18 {
+  color: hsl(270, 100%, 75%);
+}
+
+.output-color-19 {
+  color: hsl(285, 100%, 75%);
+}
+
+.output-color-20 {
+  color: hsl(300, 100%, 75%);
+}
+
+.output-color-21 {
+  color: hsl(315, 100%, 75%);
+}
+
+.output-color-22 {
+  color: hsl(330, 100%, 75%);
+}
+
+.output-color-23 {
+  color: hsl(345, 100%, 75%);
+}
+
+.output-color-24 {
+  color: hsl(360, 100%, 75%);
+}
+
+/* Estilos para navegadores WebKit (Chrome, Safari, etc.) */
+/* Cor da barra de rolagem */
+::-webkit-scrollbar {
+  width: 10px;
+  /* largura da barra de rolagem */
+}
+
+/* Estilo do fundo da barra de rolagem */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  /* cor de fundo */
+}
+
+/* Estilo do indicador da posição atual */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  /* cor do indicador */
+}
+
+/* Estilos para navegadores Firefox */
+/* Cor da barra de rolagem */
+::-moz-scrollbar {
+  width: 10px;
+  /* largura da barra de rolagem */
+}
+
+/* Estilo do fundo da barra de rolagem */
+::-moz-scrollbar-track {
+  background: #f1f1f1;
+  /* cor de fundo */
+}
+
+/* Estilo do indicador da posição atual */
+::-moz-scrollbar-thumb {
+  background: #888;
+  /* cor do indicador */
 }
