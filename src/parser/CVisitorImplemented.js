@@ -123,14 +123,14 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   newColor() {
-    if (this.colorsUsed.length >= 24) {
+    if (this.colorsUsed.length >= 33) {
       this.colorsUsed = [];
       this.newColor();
     }
 
     let color = null;
     while (!color) {
-      let h = Math.floor(Math.random() * 25 - 1) + 1;
+      let h = Math.floor(Math.random() * 32 - 1) + 1;
       if (!this.colorsUsed.includes(h)) {
         color = h;
         this.colorsUsed.push(h);

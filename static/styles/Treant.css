@@ -6,8 +6,8 @@
   padding: 0 !important;
 }
 
-.Treant>.node,
-.Treant>.pseudo {
+.Treant > .node,
+.Treant > .pseudo {
   position: absolute;
   display: block;
   visibility: hidden;
@@ -18,7 +18,7 @@
   visibility: visible;
 }
 
-.Treant>.pseudo {
+.Treant > .pseudo {
   width: 0;
   height: 0;
   border: none;
@@ -40,7 +40,7 @@
   background-color: #868dee;
 }
 
-.Treant>.node img {
+.Treant > .node img {
   border: none;
   float: left;
 }
@@ -132,7 +132,7 @@ body {
   width: 400px;
 }
 
-.Treant>p {
+.Treant > p {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue",
     Helvetica, Arial, "Lucida Grande", sans-serif;
   font-weight: bold;
@@ -268,4 +268,80 @@ a.collapse-switch {
 
 .node-color-24 {
   background-color: hsl(360, 100%, 75%);
+}
+
+.node-color-25 {
+  background-color: hsl(0, 100%, 60%);
+}
+.node-color-26 {
+  background-color: hsl(15, 100%, 60%);
+}
+.node-color-27 {
+  background-color: hsl(30, 100%, 60%);
+}
+.node-color-28 {
+  background-color: hsl(45, 100%, 60%);
+}
+.node-color-29 {
+  background-color: hsl(60, 100%, 60%);
+}
+.node-color-30 {
+  background-color: hsl(75, 100%, 60%);
+}
+.node-color-31 {
+  background-color: hsl(90, 100%, 60%);
+}
+.node-color-32 {
+  background-color: hsl(105, 100%, 60%);
+}
+.node-color-33 {
+  background-color: hsl(120, 100%, 60%);
+}
+.node-color-34 {
+  background-color: hsl(135, 100%, 60%);
+}
+.node-color-35 {
+  background-color: hsl(150, 100%, 60%);
+}
+.node-color-36 {
+  background-color: hsl(165, 100%, 60%);
+}
+.node-color-37 {
+  background-color: hsl(180, 100%, 60%);
+}
+.node-color-38 {
+  background-color: hsl(195, 100%, 60%);
+}
+.node-color-39 {
+  background-color: hsl(210, 100%, 60%);
+}
+.node-color-40 {
+  background-color: hsl(225, 100%, 60%);
+}
+.node-color-41 {
+  background-color: hsl(240, 100%, 60%);
+}
+.node-color-42 {
+  background-color: hsl(255, 100%, 60%);
+}
+.node-color-43 {
+  background-color: hsl(270, 100%, 60%);
+}
+.node-color-44 {
+  background-color: hsl(285, 100%, 60%);
+}
+.node-color-45 {
+  background-color: hsl(300, 100%, 60%);
+}
+.node-color-46 {
+  background-color: hsl(315, 100%, 60%);
+}
+.node-color-47 {
+  background-color: hsl(330, 100%, 60%);
+}
+.node-color-48 {
+  background-color: hsl(345, 100%, 60%);
+}
+.node-color-49 {
+  background-color: hsl(360, 100%, 60%);
 }
