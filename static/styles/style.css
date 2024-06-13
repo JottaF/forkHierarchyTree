@@ -83,6 +83,10 @@ header {
   margin-bottom: 0;
 }
 
+.output-color-white {
+  color: white;
+}
+
 .output-color-0 {
   color: hsl(0, 100%, 75%);
 }

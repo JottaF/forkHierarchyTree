@@ -1,7 +1,6 @@
 import { ForkTree } from "../ForkTree";
 import CVisitor from "./CVisitor";
 import { Process } from "./Process";
-import { ImpressionNode } from "./ImpressionTree";
 
 export default class CVisitorImplemented extends CVisitor {
   constructor() {
@@ -15,7 +14,6 @@ export default class CVisitorImplemented extends CVisitor {
     this.currentProcess.forkEnabled = true;
     this.currentProcess.pid = 1;
     this.currentProcess.isSleeping = false;
-    this.currentProcess.impressionNode = new ImpressionNode();
 
     this.processList = [this.currentProcess];
     this.currentBlockItem = null;
@@ -23,9 +21,11 @@ export default class CVisitorImplemented extends CVisitor {
     this.currentBlockItemList = null;
 
     this.colorsUsed = [];
+    this.promisses = [];
   }
 
   visitChildren(ctx) {
+    console.log(this.currentProcess.pid);
     this.countNodes++;
 
     if (!this.currentProcess.isActivated) {
@@ -52,11 +52,9 @@ export default class CVisitorImplemented extends CVisitor {
     newProcess.variables = this.cloneMap(this.currentProcess.variables);
     newProcess.context = { ...this.currentProcess.context };
     newProcess.context.iterationsNotExecuted = [];
-    newProcess.impressionNode = new ImpressionNode();
     node.color = color;
-    newProcess.impressionNode.color = color;
-
-    this.currentProcess.impressionNode.addChild(newProcess.impressionNode);
+    newProcess.color = color;
+    newProcess.messageSequence = this.currentProcess.messageSequence;
 
     this.processList.push(newProcess);
     return node.pid;
@@ -81,44 +79,26 @@ export default class CVisitorImplemented extends CVisitor {
     }
   }
 
-  promiseNode(data, range) {
+  promiseNode(message, color, range) {
     return new Promise((resolve, reject) => {
       // O que precisa fazer agora é garantir os nós pai executem antes dos filhos
       const max = 100 * (range + 1);
       const min = 100 * range;
       const time = Math.random() * (max - min) + min;
       setTimeout(() => {
-        resolve(this.printNode(data, range));
+        resolve(this.printMessage(message, color));
       }, time);
     });
-  }
-
-  printNode(node, range = 0) {
-    if (node.content) {
-      if (node.color) {
-        this.printMessage(node.content, node.color);
-      } else {
-        console.log(node.content);
-      }
-      return Promise.resolve(); // Retorna uma Promise resolvida
-    } else {
-      let range2 = range;
-      const promises = Array.from(node.children).map((child) => {
-        range2++;
-        if (child.sleep) {
-          range2 += child.sleep * 10;
-        }
-        return this.promiseNode(child, range2);
-      });
-      // Aguarda a resolução de todas as Promises
-      return Promise.all(promises);
-    }
   }
 
   printMessage(message, color) {
     const p = document.createElement("p");
     p.textContent = message;
-    p.classList.add("log", `output-color-${color}`);
+    if (color) {
+      p.classList.add("log", `output-color-${color}`);
+    } else {
+      p.classList.add("log", "output-color-white");
+    }
     document.getElementById("console-container").appendChild(p);
   }
 
@@ -171,11 +151,15 @@ export default class CVisitorImplemented extends CVisitor {
       process = this.processList[processIndex];
     }
 
+    document.getElementById("apagar").setAttribute("disabled", true);
     document.getElementById("gerarArvore").setAttribute("disabled", true);
+    document.getElementById("limparConsole").setAttribute("disabled", true);
 
     // Imprime no conssole
-    await this.printNode(this.processList[0].impressionNode);
+    await Promise.all(this.promisses);
+    document.getElementById("apagar").removeAttribute("disabled");
     document.getElementById("gerarArvore").removeAttribute("disabled");
+    document.getElementById("limparConsole").removeAttribute("disabled");
   }
 
   visitBlockItemList(ctx) {
@@ -1049,21 +1033,20 @@ export default class CVisitorImplemented extends CVisitor {
         }
         output = output.trim().replaceAll('"', "").replaceAll("\\n", "");
 
-        if (this.currentProcess.pid == 1 && this.processList.length == 1) {
-          console.log(output);
-        } else {
-          const impressionNode = new ImpressionNode(output);
-          impressionNode.color = this.currentProcess.impressionNode.color;
-          this.currentProcess.impressionNode.addChild(impressionNode);
-        }
+        this.promisses.push(
+          this.promiseNode(
+            output,
+            this.currentProcess.color,
+            this.currentProcess.messageSequence
+          )
+        );
+        this.currentProcess.messageSequence++;
       } else if (ctx.getText() === "getpid()") {
         return this.currentProcess.tree.pid;
       } else if (ctx.getText() === "getppid()") {
         return this.currentProcess.tree.ppid;
       } else if (element === "sleep") {
-        this.currentProcess.impressionNode.addChild(
-          new ImpressionNode(null, parseInt(result[2]))
-        );
+        this.currentProcess.messageSequence += 10 * parseInt(result[2]);
       } else if (ctx.children.length === 2) {
         if (typeof element === typeof Number()) {
           switch (ctx.children[1].getText()) {
