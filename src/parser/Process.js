@@ -15,7 +15,6 @@ export class Process {
     this.forkEnabled = false;
     this.pid = node.pid;
     this.context = {};
-    this.impressionNode;
     this.messageSequence = 0;
     this.color;
   }
