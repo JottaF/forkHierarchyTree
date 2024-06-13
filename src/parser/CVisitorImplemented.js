@@ -25,7 +25,6 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitChildren(ctx) {
-    console.log(this.currentProcess.pid);
     this.countNodes++;
 
     if (!this.currentProcess.isActivated) {
