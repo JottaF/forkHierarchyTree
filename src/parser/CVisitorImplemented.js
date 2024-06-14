@@ -8,8 +8,6 @@ export default class CVisitorImplemented extends CVisitor {
     this.tree = new ForkTree();
     this.pidController = this.tree.pidController;
 
-    this.countNodes = 0;
-
     this.currentProcess = new Process(null, this.tree.root);
     this.currentProcess.forkEnabled = true;
     this.currentProcess.pid = 1;
@@ -25,8 +23,6 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   visitChildren(ctx) {
-    this.countNodes++;
-
     if (!this.currentProcess.isActivated) {
       return null;
     }
@@ -102,7 +98,7 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   newColor() {
-    if (this.colorsUsed.length >= 33) {
+    if (this.colorsUsed.length > 31) {
       this.colorsUsed = [];
       this.newColor();
     }
