@@ -98,7 +98,7 @@ export default class CVisitorImplemented extends CVisitor {
   }
 
   newColor() {
-    if (this.colorsUsed.length >= 33) {
+    if (this.colorsUsed.length > 31) {
       this.colorsUsed = [];
       this.newColor();
     }
