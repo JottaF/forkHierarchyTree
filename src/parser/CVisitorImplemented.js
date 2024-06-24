@@ -148,13 +148,11 @@ export default class CVisitorImplemented extends CVisitor {
 
     document.getElementById("apagar").setAttribute("disabled", true);
     document.getElementById("gerarArvore").setAttribute("disabled", true);
-    document.getElementById("limparConsole").setAttribute("disabled", true);
 
     // Imprime no conssole
     await Promise.all(this.promisses);
     document.getElementById("apagar").removeAttribute("disabled");
     document.getElementById("gerarArvore").removeAttribute("disabled");
-    document.getElementById("limparConsole").removeAttribute("disabled");
   }
 
   visitBlockItemList(ctx) {
