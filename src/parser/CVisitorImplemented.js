@@ -386,7 +386,12 @@ export default class CVisitorImplemented extends CVisitor {
       return null;
     }
 
-    return this.visitChildren(ctx)[0];
+    const result = this.visitChildren(ctx);
+
+    if (!result) {
+      return null;
+    }
+    return result[0];
   }
 
   visitIterationStatement(ctx) {
